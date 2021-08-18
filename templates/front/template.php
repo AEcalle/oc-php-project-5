@@ -46,10 +46,10 @@
                                     <a class="nav-link" href="../../public/assets/pdf/cv.pdf">CV Aurélien Ecalle</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="connexion.php">Connexion</a>
+                                    <a class="nav-link" href="login.php">Connexion</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="mentions.php">Mentions légales</a>
+                                    <a class="nav-link" href="legal.php">Mentions légales</a>
                                 </li>                                
                             </ul>
                         </nav>
