@@ -39,7 +39,7 @@
                         </li> 
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Posts
+                                Utilisateurs
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown2">
                                 <li><a class="dropdown-item" href="createUser.php">Créer un Utilisateur</a></li>
@@ -47,7 +47,7 @@
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="../front/home.php">Voir le site</a>
+                            <a class="nav-link" href="../front/home.php" target="_blank">Voir le site</a>
                         </li>                 
                     </ul>
                 </div>
