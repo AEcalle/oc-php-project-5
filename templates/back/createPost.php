@@ -21,8 +21,12 @@ ob_start();
         <div class="col-md-10 col-lg-8 col-xl-7">           
             <form id="contactForm" method="post">
                 <div class="form-floating">
+                    <input class="form-control" id="author" type="text" placeholder="Auteur" required />
+                    <label for="author">Auteur</label>                            
+                </div>
+                <div class="form-floating">
                     <input class="form-control" id="title" type="text" placeholder="Titre" required />
-                    <label for="name">Titre</label>                            
+                    <label for="title">Titre</label>                            
                 </div>
                 <div class="form-floating">
                     <textarea class="form-control" id="standfirst" placeholder="Chapô" style="height: 12rem" required></textarea>
