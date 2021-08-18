@@ -22,7 +22,7 @@ ob_start();
         <div class="col-md-10 col-lg-8 col-xl-7">
             <!-- Post preview-->
             <div class="post-preview">
-                <a href="post.html">
+                <a href="post.php">
                     <h2 class="post-title">Titre d'un article</h2>
                     <h3 class="post-subtitle">Chapô</h3>
                 </a>
@@ -36,7 +36,7 @@ ob_start();
             <hr class="my-4" />
             <!-- Post preview-->
             <div class="post-preview">
-                <a href="post.html">
+                <a href="post.php">
                     <h2 class="post-title">Titre d'un article</h2>
                     <h3 class="post-subtitle">Chapô</h3>
                 </a>
