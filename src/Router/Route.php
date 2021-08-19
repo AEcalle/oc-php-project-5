@@ -1,6 +1,6 @@
 <?php
 
-namespace AEcalle\Oc\Php\Project5;
+namespace AEcalle\Oc\Php\Project5\Router;
 
 class Route
 {

@@ -2,7 +2,7 @@
 
 require '../vendor/autoload.php';
 
-use AEcalle\Oc\Php\Project5\Router;
+use AEcalle\Oc\Php\Project5\Router\Router;
 
 $router = new Router($_GET['url']);
 
