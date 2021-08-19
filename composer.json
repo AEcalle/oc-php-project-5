@@ -9,5 +9,10 @@
             "email": "contact@aurelienecalle.fr"
         }
     ],
+    "autoload": {
+        "psr-4":{
+            "AEcalle\\Oc\\Php\\Project5\\":"src/"
+        }
+    },
     "require": {}
 }
