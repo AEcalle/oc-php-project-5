@@ -29,7 +29,16 @@ class Router
     {
         if (!isset($this->routes[$_SERVER['REQUEST_METHOD']])) 
         {
-            throw new \Exception('No routes matches');
+            throw new RouterException('REQUEST_METHOD doesn\'t exist');
         }
+
+        foreach($this->routes[$_SERVER['REQUEST_METHOD']] as $route)
+        {
+            if ($route->match($this->url)){
+                return $route->call();
+            }
+        }
+
+        throw new RouterException('No matching routes');
     }
 }
