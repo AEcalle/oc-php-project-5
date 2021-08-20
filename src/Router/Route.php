@@ -32,4 +32,9 @@ class Route
 
         return true;
     }
+
+    public function call()
+    {
+        return call_user_func_array($this->callable,$this->matches);
+    }
 }
