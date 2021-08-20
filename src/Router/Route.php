@@ -6,7 +6,8 @@ class Route
 {
     private $path;
     private $callable;
-    private $matches;
+    private $matches = [];
+    private $params = [];
     
     public function __construct($path,$callable)
     {
@@ -14,11 +15,17 @@ class Route
         $this->callable = $callable;
     }
 
+    public function width($param, $regex)
+    {
+        $this->params[$param] = str_replace('(','(?:',$regex);
+        return $this;
+    }
+
     public function match($url)
     {         
         $url = trim($url,"/");
     
-        $path = preg_replace('#:([a-zA-Z0-9_]+)+#','([^/]+)', $this->path);
+        $path = preg_replace_callback('#:([a-zA-Z0-9_]+)+#', [$this,'paramMatch'], $this->path);
         
         $regex = "#^$path$#i";
     
@@ -33,8 +40,17 @@ class Route
         return true;
     }
 
+    private function paramMatch($match){
+        if(isset($this->params[$match[1]]))
+        {
+            return '('.$this->params[$match[1]].')';
+        }
+        
+        return '([^/]+)';
+    }
+
     public function call()
-    {
+    {        
         return call_user_func_array($this->callable,$this->matches);
     }
 }

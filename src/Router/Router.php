@@ -17,13 +17,17 @@ class Router
     {
         $route = new Route($path, $callable);
         $this->routes['GET'][] = $route;
+
+        return $route;
     }
 
     public function post($path, $callable)
     {
         $route = new Route($path, $callable);
         $this->routes['POST'][] = $route;
-    }
+
+        return $route;
+    }    
 
     public function run()
     {
