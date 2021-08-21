@@ -6,7 +6,7 @@ use AEcalle\Oc\Php\Project5\Router\Router;
 
 $router = new Router($_GET['url']);
 
-$router->get('/',function(){echo 'Homepage';});
+$router->get('/','HomeController#show');
 $router->get('/posts',function(){echo 'Tous les articles';});
 $router->get('/posts/:id-:slug',function($id, $slug) use ($router)
 {echo $router->url('posts.show',['id'=>$id,'slug'=>$slug]);},
