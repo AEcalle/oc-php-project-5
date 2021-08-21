@@ -7,7 +7,7 @@ class Route
     private $path;
     private $callable;
     private $matches = [];
-    private $params = [];
+    private $paramsRegex = [];
     
     public function __construct($path,$callable)
     {
@@ -17,7 +17,7 @@ class Route
 
     public function width($param, $regex)
     {
-        $this->params[$param] = str_replace('(','(?:',$regex);
+        $this->paramsRegex[$param] = str_replace('(','(?:',$regex);
         return $this;
     }
 
@@ -41,9 +41,9 @@ class Route
     }
 
     private function paramMatch($match){
-        if(isset($this->params[$match[1]]))
+        if(isset($this->paramsRegex[$match[1]]))
         {
-            return '('.$this->params[$match[1]].')';
+            return '('.$this->paramsRegex[$match[1]].')';
         }
         
         return '([^/]+)';
