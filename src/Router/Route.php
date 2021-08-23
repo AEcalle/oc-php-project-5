@@ -2,7 +2,7 @@
 
 namespace AEcalle\Oc\Php\Project5\Router;
 
-class Route
+final class Route
 {
     private $path;
     private $callable;

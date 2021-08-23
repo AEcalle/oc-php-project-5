@@ -4,7 +4,7 @@ namespace AEcalle\Oc\Php\Project5\Router;
 
 use Exception;
 
-class Router
+final class Router
 {
 
     private $url;
