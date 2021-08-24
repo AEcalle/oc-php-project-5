@@ -6,27 +6,62 @@ use Exception;
 
 final class Router
 {
+    /**
+     * @var string
+     */
+    private string $url;
 
-    private $url;
-    private $routes = [];
-    private $namedRoutes = [];
+    /**
+     * @var array
+     */
+    private array $routes = [];
+    
+    /**
+     * @var array
+     */
+    private array $namedRoutes = [];
 
-    public function __construct($url)
+    public function __construct(String $url)
     {
         $this->url = $url;
     }
-
-    public function get($path, $callable, $name = null)
+    
+    /**
+     * get
+     *
+     * @param  string $path
+     * @param  string,callable $callable
+     * @param  string $name
+     * @return Route
+     */
+    public function get(String $path, $callable,String $name = null): Route
     {
         return $this->add($path, $callable, $name, 'GET');
     }
-
-    public function post($path, $callable, $name = null)
+    
+    /**
+     * post
+     *
+     * @param  string $path
+     * @param  string,callable $callable
+     * @param  string $name
+     * @return Route
+     */
+    public function post(String $path, $callable,String $name = null): Route
     {
         return $this->add($path, $callable, $name, 'POST');
     }
-    
-    private function add($path, $callable, $name, $method)
+        
+    /**
+     * add
+     *
+     * @param  string $path
+     * @param  string, callable $callable
+     * @param  string $name
+     * @param  string $method
+     * @return Route
+     */
+    private function add(String $path, $callable,String $name = null, String $method): Route
     {
         $route = new Route($path, $callable);
         $this->routes[$method][] = $route;
@@ -36,8 +71,13 @@ final class Router
         }
         return $route;
     }
-
-    public function run()
+    
+    /**
+     * run
+     *
+     * @return string
+     */
+    public function run(): ?string
     {
         if (!isset($this->routes[$_SERVER['REQUEST_METHOD']])) 
         {

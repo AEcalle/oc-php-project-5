@@ -4,24 +4,52 @@ namespace AEcalle\Oc\Php\Project5\Router;
 
 final class Route
 {
-    private $path;
+    /**
+     * @var string
+     */
+    private string $path;
+
+    /**
+     * @var string,callable
+     */
     private $callable;
-    private $matches = [];
-    private $paramsRegex = [];
+
+    /**
+     * @var string[]
+     */
+    private array $matches = [];
     
-    public function __construct($path,$callable)
+    /**
+     * @var string[]
+     */
+    private array $paramsRegex = [];
+    
+    public function __construct(String $path, $callable)
     {
         $this->path = trim($path,'/');
         $this->callable = $callable;
     }
-
-    public function width($param, $regex)
+    
+    /**
+     * width
+     *
+     * @param  string $param
+     * @param  string $regex
+     * @return $this
+     */
+    public function width(String $param, String $regex): self
     {
         $this->paramsRegex[$param] = str_replace('(','(?:',$regex);
         return $this;
     }
-
-    public function match($url)
+    
+    /**
+     * match
+     *
+     * @param  string $url
+     * @return bool
+     */
+    public function match(String $url): bool
     {         
         $url = trim($url,"/");
     
@@ -39,8 +67,15 @@ final class Route
 
         return true;
     }
-
-    private function paramMatch($match){
+    
+    /**
+     * paramMatch
+     *
+     * @param  string[] $match
+     * @return String
+     */
+    private function paramMatch(Array $match): String
+    {
         if(isset($this->paramsRegex[$match[1]]))
         {
             return '('.$this->paramsRegex[$match[1]].')';
@@ -48,8 +83,13 @@ final class Route
         
         return '([^/]+)';
     }
-
-    public function call()
+    
+    /**
+     * call
+     *
+     * @return string
+     */
+    public function call(): ?string
     {        
         if (is_string($this->callable))
         {
