@@ -14,5 +14,7 @@
             "AEcalle\\Oc\\Php\\Project5\\":"src/"
         }
     },
-    "require": {}
+    "require": {
+        "symfony/http-foundation": "^5.3"
+    }
 }
