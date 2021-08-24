@@ -2,7 +2,7 @@
 
 namespace AEcalle\Oc\Php\Project5\Router;
 
-use Exception;
+use Symfony\Component\HttpFoundation\Request;
 
 final class Router
 {
@@ -79,12 +79,14 @@ final class Router
      */
     public function run(): ?string
     {
-        if (!isset($this->routes[$_SERVER['REQUEST_METHOD']])) 
+        $request = Request::createFromGlobals();
+
+        if (!isset($this->routes[$request->getMethod()])) 
         {
             throw new RouterException('REQUEST_METHOD doesn\'t exist');
         }
 
-        foreach($this->routes[$_SERVER['REQUEST_METHOD']] as $route)
+        foreach($this->routes[$request->getMethod()] as $route)
         {
             if ($route->match($this->url)){
                 return $route->call();

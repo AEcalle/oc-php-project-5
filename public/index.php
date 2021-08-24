@@ -3,8 +3,10 @@
 require '../vendor/autoload.php';
 
 use AEcalle\Oc\Php\Project5\Router\Router;
+use Symfony\Component\HttpFoundation\Request;
 
-$router = new Router($_GET['url']);
+$request = Request::createFromGlobals();
+$router = new Router($request->query->get('url'));
 
 $router->get('/','HomeController#show');
 $router->get('/blog',function(){echo 'Affiche tous les articles';});
