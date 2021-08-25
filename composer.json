@@ -15,6 +15,7 @@
         }
     },
     "require": {
-        "symfony/http-foundation": "^5.3"
+        "symfony/http-foundation": "^5.3",
+        "twig/twig": "3.0"
     }
 }
