@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 $request = Request::createFromGlobals();
 $router = new Router($request->getPathInfo());
 
-$router->get('/','HomeController#show');
+$router->get('/','FrontController#home');
 $router->get('/blog',function(){echo 'Affiche tous les articles';});
 $router->get('/posts/:id-:slug',function($id,$slug)
 {echo $id.' : '.$slug;},'posts.show')->width('id','[0-9]+')->width('slug','[0-9a-z\-]+');
