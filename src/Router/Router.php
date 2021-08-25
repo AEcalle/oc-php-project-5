@@ -5,19 +5,16 @@ namespace AEcalle\Oc\Php\Project5\Router;
 use Symfony\Component\HttpFoundation\Request;
 
 final class Router
-{
-    /**
-     * @var string
-     */
+{    
     private string $url;
 
     /**
-     * @var array
+     * @var Route[]
      */
     private array $routes = [];
     
     /**
-     * @var array
+     * @var Route[]
      */
     private array $namedRoutes = [];
 
@@ -27,12 +24,9 @@ final class Router
     }
     
     /**
-     * get
-     *
-     * @param  string $path
-     * @param  string|callable $callable
-     * @param  string $name
-     * @return Route
+     * 
+     * @param  string|callable $callable     
+     * 
      */
     public function get(string $path, $callable,string $name = null): Route
     {
@@ -40,12 +34,9 @@ final class Router
     }
     
     /**
-     * post
      *
-     * @param  string $path
      * @param  string|callable $callable
-     * @param  string $name
-     * @return Route
+     * 
      */
     public function post(string $path, $callable,string $name = null): Route
     {
@@ -53,13 +44,9 @@ final class Router
     }
         
     /**
-     * add
-     *
-     * @param  string $path
-     * @param  string| callable $callable
-     * @param  string $name
-     * @param  string $method
-     * @return Route
+     *      
+     * @param  string|callable $callable
+     * 
      */
     private function add(string $path, $callable,string $name = null, string $method): Route
     {
@@ -70,13 +57,8 @@ final class Router
             $this->namedRoutes[$name] = $route;
         }
         return $route;
-    }
-    
-    /**
-     * run
-     *
-     * @return string
-     */
+    }    
+ 
     public function run(): ?string
     {
         $request = Request::createFromGlobals();

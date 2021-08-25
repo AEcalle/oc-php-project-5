@@ -4,9 +4,6 @@ namespace AEcalle\Oc\Php\Project5\Router;
 
 final class Route
 {
-    /**
-     * @var string
-     */
     private string $path;
 
     /**
@@ -24,31 +21,21 @@ final class Route
      */
     private array $paramsRegex = [];
     
+    /**
+     * @var string|callable
+     */
     public function __construct(string $path, $callable)
     {
         $this->path = trim($path,'/');
         $this->callable = $callable;
-    }
-    
-    /**
-     * width
-     *
-     * @param  string $param
-     * @param  string $regex
-     * @return $this
-     */
+    }    
+   
     public function width(string $param, string $regex): self
     {
         $this->paramsRegex[$param] = str_replace('(','(?:',$regex);
         return $this;
-    }
-    
-    /**
-     * match
-     *
-     * @param  string $url
-     * @return bool
-     */
+    }    
+  
     public function match(string $url): bool
     {         
         $url = trim($url,"/");
@@ -69,10 +56,9 @@ final class Route
     }
     
     /**
-     * paramMatch
      *
      * @param  string[] $match
-     * @return String
+     * 
      */
     private function paramMatch(array $match): string
     {
@@ -83,12 +69,7 @@ final class Route
         
         return '([^/]+)';
     }
-    
-    /**
-     * call
-     *
-     * @return string
-     */
+ 
     public function call(): ?string
     {        
         if (is_string($this->callable))
