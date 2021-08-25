@@ -11,4 +11,9 @@ class FrontController extends AbstractController
        
         return $this->render('front/home.html.twig');
     }
+
+    public function testRedirect(): RedirectResponse
+    {
+        return $this->redirect('posts.show',['id'=>1,'slug'=>'test']);
+    }
 }
