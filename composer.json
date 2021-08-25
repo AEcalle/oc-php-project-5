@@ -1,0 +1,20 @@
+{
+    "name": "aecalle/oc-php-project-5",
+    "description": "OpenClassrooms - Développeur d'application PHP/Symfony - Projet 5",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "AEcalle",
+            "email": "contact@aurelienecalle.fr"
+        }
+    ],
+    "autoload": {
+        "psr-4":{
+            "AEcalle\\Oc\\Php\\Project5\\":"src/"
+        }
+    },
+    "require": {
+        "symfony/http-foundation": "^5.3"
+    }
+}
