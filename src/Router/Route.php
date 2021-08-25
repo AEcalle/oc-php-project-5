@@ -10,7 +10,7 @@ final class Route
     private string $path;
 
     /**
-     * @var string,callable
+     * @var string|callable
      */
     private $callable;
 
@@ -24,7 +24,7 @@ final class Route
      */
     private array $paramsRegex = [];
     
-    public function __construct(String $path, $callable)
+    public function __construct(string $path, $callable)
     {
         $this->path = trim($path,'/');
         $this->callable = $callable;
@@ -37,7 +37,7 @@ final class Route
      * @param  string $regex
      * @return $this
      */
-    public function width(String $param, String $regex): self
+    public function width(string $param, string $regex): self
     {
         $this->paramsRegex[$param] = str_replace('(','(?:',$regex);
         return $this;
@@ -49,7 +49,7 @@ final class Route
      * @param  string $url
      * @return bool
      */
-    public function match(String $url): bool
+    public function match(string $url): bool
     {         
         $url = trim($url,"/");
     
@@ -74,7 +74,7 @@ final class Route
      * @param  string[] $match
      * @return String
      */
-    private function paramMatch(Array $match): String
+    private function paramMatch(array $match): string
     {
         if(isset($this->paramsRegex[$match[1]]))
         {

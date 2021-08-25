@@ -21,7 +21,7 @@ final class Router
      */
     private array $namedRoutes = [];
 
-    public function __construct(String $url)
+    public function __construct(string $url)
     {
         $this->url = $url;
     }
@@ -30,11 +30,11 @@ final class Router
      * get
      *
      * @param  string $path
-     * @param  string,callable $callable
+     * @param  string|callable $callable
      * @param  string $name
      * @return Route
      */
-    public function get(String $path, $callable,String $name = null): Route
+    public function get(string $path, $callable,string $name = null): Route
     {
         return $this->add($path, $callable, $name, 'GET');
     }
@@ -43,11 +43,11 @@ final class Router
      * post
      *
      * @param  string $path
-     * @param  string,callable $callable
+     * @param  string|callable $callable
      * @param  string $name
      * @return Route
      */
-    public function post(String $path, $callable,String $name = null): Route
+    public function post(string $path, $callable,string $name = null): Route
     {
         return $this->add($path, $callable, $name, 'POST');
     }
@@ -56,12 +56,12 @@ final class Router
      * add
      *
      * @param  string $path
-     * @param  string, callable $callable
+     * @param  string| callable $callable
      * @param  string $name
      * @param  string $method
      * @return Route
      */
-    private function add(String $path, $callable,String $name = null, String $method): Route
+    private function add(string $path, $callable,string $name = null, string $method): Route
     {
         $route = new Route($path, $callable);
         $this->routes[$method][] = $route;
