@@ -30,7 +30,7 @@ abstract class AbstractController
     }
 
     /**
-     * @param mixed[] $context
+     * @param string[] $context
      */
 
     public function redirect(string $route, array $context = []): RedirectResponse
