@@ -15,6 +15,6 @@ class FrontController extends AbstractController
 
     public function testRedirect(): RedirectResponse
     {
-        return $this->redirect('posts.show',['id'=>1,'slug'=>'test']);
+        return $this->redirect('post',['id'=>1,'slug'=>'test']);
     }
 }

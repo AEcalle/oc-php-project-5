@@ -11,7 +11,7 @@ $router = new Router($request->getPathInfo());
 $router->get('/','FrontController#home','home');
 $router->get('/blog',function(){echo 'Affiche tous les articles';});
 $router->get('/post/:id-:slug',function($id,$slug)
-{echo $id.' : '.$slug;},'posts.show')->width('id','[0-9]+')->width('slug','[0-9a-z\-]+');
+{echo $id.' : '.$slug;},'post')->width('id','[0-9]+')->width('slug','[0-9a-z\-]+');
 $router->post('/post/:id-:slug',function($id,$slug){echo 'Poster un commentaire pour l\'article '. $id;});
 $router->get('/login',function(){echo 'Se connecter';});
 $router->get('/legal',function(){echo 'Mentions légales';});
