@@ -3,6 +3,7 @@
 namespace AEcalle\Oc\Php\Project5\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class FrontController extends AbstractController
 {
