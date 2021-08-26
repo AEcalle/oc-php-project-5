@@ -36,6 +36,6 @@ abstract class AbstractController
     public function redirect(string $route, array $context = []): RedirectResponse
     {
         $path = $this->router->generateUrl($route, $context);
-        return new RedirectResponse('../public/' . $path);
+        return new RedirectResponse($path);
     }
 }
