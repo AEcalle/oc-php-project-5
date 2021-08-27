@@ -2,6 +2,8 @@
 
 namespace AEcalle\Oc\Php\Project5\Router;
 
+use AEcalle\Oc\Php\Project5\Router\Router;
+
 final class Route
 {
     private string $path;
@@ -70,17 +72,35 @@ final class Route
         return '([^/]+)';
     }
  
-    public function call(): ?string
+    public function call(Router $router): ?string
     {        
         if (is_string($this->callable))
         {
             $params = explode('#',$this->callable);
             $controller = 'AEcalle\Oc\Php\Project5\Controller\\'.$params[0];
-            $controller = new $controller();
-            return call_user_func_array([$controller,$params[1]], $this->matches);          
+            $controller = new $controller($router);
+            return call_user_func_array([$controller,$params[1]], $this->matches)->send();          
         }
 
         return call_user_func_array($this->callable,$this->matches);
+    }
+
+    /**
+     *
+     * @param  string[] $params
+     * 
+     */
+
+    public function getUrl(array $params)
+    {
+        $path = $this->path;
+       
+        foreach($params as $k=>$v)
+        {
+            $path = str_replace(":$k",$v,$path);
+        }
+
+        return $path;
     }
     
 }
