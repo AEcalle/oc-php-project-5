@@ -17,6 +17,7 @@
     "require": {
         "symfony/http-foundation": "^5.3",
         "twig/twig": "3.0",
-        "symfony/mailer": "^5.3"
+        "symfony/mailer": "^5.3",
+        "beberlei/assert": "^3.3"
     }
 }
