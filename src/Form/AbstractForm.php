@@ -8,7 +8,7 @@ use AEcalle\Oc\Php\Project5\Service\ValidatorService;
 abstract class AbstractForm 
 {    
     protected static Request $request;    
-    protected string $token;
+    protected string $token;     
 
     public function __construct()
     {

@@ -7,7 +7,9 @@ class ContactForm extends AbstractForm
     protected string $token;
     private string $name = '';
     private string $email = '';
-    private string $message = '';    
+    private string $message = '';
+    private string $flashMessage = ''; 
+    private string $colorFlashMessage = 'danger';    
 
     public function getToken(): string
     {
@@ -55,5 +57,29 @@ class ContactForm extends AbstractForm
         $this->message = $message;
 
         return $this;
-    }   
+    } 
+
+    public function getFlashMessage(): string
+    {
+        return $this->flashMessage;
+    }
+
+    public function setFlashMessage(string $flashMessage): self
+    {
+        $this->flashMessage = $flashMessage;
+
+        return $this;
+    }
+    
+    public function getColorFlashMessage(): string
+    {
+        return $this->colorFlashMessage;
+    }
+   
+    public function setColorFlashMessage(string $colorFlashMessage): self
+    {
+        $this->colorFlashMessage = $colorFlashMessage;
+
+        return $this;
+    }
 }

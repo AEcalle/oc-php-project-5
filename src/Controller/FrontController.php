@@ -19,9 +19,7 @@ class FrontController extends AbstractController
 
         //Form Contact
         $form = new ContactForm();                       
-        
-        $error_email = '';
-        $success_email = '';            
+                    
         $form = $form->handleRequest();
         
         if ($form->isSubmitted())
@@ -33,17 +31,16 @@ class FrontController extends AbstractController
                 if ($isEmailCorrect['test']){       
                     //Send an email         
                     MailerService::sendEmail($form->getEmail(),$form->getName(),$form->getMessage());
-                    $success_email = 'Votre message a bien été envoyé !';                   
+                    $form->setFlashMessage('Votre message a bien été envoyé !');
+                    $form->setColorFlashMessage('success');                   
                 }else{                              
-                    $error_email = $isEmailCorrect['message'];
+                    $form->setFlashMessage($isEmailCorrect['message']);
                 }
             }              
         }        
       
         return $this->render('front/home.html.twig', [
-            'posts'=>$posts,
-            'error_email'=>$error_email,
-            'success_email'=>$success_email,
+            'posts'=>$posts,         
             'form'=>$form          
         ]);
     }
