@@ -5,9 +5,9 @@ use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mime\Email;
 
-class MailerService
+abstract class MailerService
 {  
-    public function sendEmail(string $from,string $name,string $message): void
+    public static function sendEmail(string $from,string $name,string $message): void
     {
         $transport = Transport::fromDsn('smtp://smtp.ionos.fr:465?encryption=ssl&auth_mode=login&username=&password=&verify_peer=false');
         $mailer = new Mailer($transport);    
@@ -19,6 +19,6 @@ class MailerService
             ->text("Message de : $name. $message")
             ->html("<p>Message de : $name.<p></p> $message</p>");
     
-        $mailer->send($email);       
+        // $mailer->send($email);       
     }
 }
