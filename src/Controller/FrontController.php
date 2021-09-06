@@ -7,6 +7,7 @@ use AEcalle\Oc\Php\Project5\Service\MailerService;
 use AEcalle\Oc\Php\Project5\Service\ValidatorService;
 use AEcalle\Oc\Php\Project5\Form\ContactForm;
 use AEcalle\Oc\Php\Project5\Repository\PostRepository;
+use AEcalle\Oc\Php\Project5\Service\TokenCSRFManager;
 
 class FrontController extends AbstractController
 {
@@ -24,7 +25,8 @@ class FrontController extends AbstractController
         
         if ($form->isSubmitted())
         {                     
-            if (ValidatorService::verifToken('contact'))
+            $tokenCSRFManager = new TokenCSRFManager();
+            if ($tokenCSRFManager->verifToken('contact'))
             {             
                 $isEmailCorrect = ValidatorService::isEmailCorrect($form->getEmail());
 
