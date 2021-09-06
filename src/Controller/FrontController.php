@@ -3,6 +3,7 @@
 namespace AEcalle\Oc\Php\Project5\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use AEcalle\Oc\Php\Project5\Service\MailerService;
 use AEcalle\Oc\Php\Project5\Entity\Contact;
 use AEcalle\Oc\Php\Project5\Form\Form;
@@ -36,6 +37,17 @@ class FrontController extends AbstractController
             'form'=>$form,
             'successMessage'=>$successMessage    
         ]);
+    }
+
+    public function blog(string $page): Response
+    {  
+        $request = Request::createFromGlobals();
+        $index = (intval($page)-1)*10;
+     
+        $postRepository = new PostRepository();        
+        $posts = $postRepository->findBy($index,10);        
+        
+        return $this->render('front/blog.html.twig',['posts'=>$posts]);
     }
     
 }
