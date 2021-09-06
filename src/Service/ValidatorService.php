@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Assert\Assertion;
 use Assert\AssertionFailedException;
 
-abstract class ValidatorService
+final class ValidatorService
 {
     public static function isEmailCorrect(string $email): array
     {

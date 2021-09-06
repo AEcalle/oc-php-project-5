@@ -5,7 +5,7 @@ use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mime\Email;
 
-abstract class MailerService
+final class MailerService
 {  
     public static function sendEmail(string $from,string $name,string $message): void
     {
