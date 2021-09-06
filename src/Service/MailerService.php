@@ -9,7 +9,7 @@ final class MailerService
 {  
     public static function sendEmail(string $from,string $name,string $message): void
     {
-        $transport = Transport::fromDsn('smtp://smtp.ionos.fr:465?encryption=ssl&auth_mode=login&username=&password=&verify_peer=false');
+        $transport = Transport::fromDsn("smtp://{$_ENV['SMTP_HOST']}?encryption=ssl&auth_mode=login&username={$_ENV['SMTP_USERNAME']}&password={$_ENV['SMTP_PASSWORD']}");
         $mailer = new Mailer($transport);    
 
         $email = (new Email())

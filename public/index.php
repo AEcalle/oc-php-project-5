@@ -2,8 +2,12 @@
 
 require '../vendor/autoload.php';
 
+use Symfony\Component\Dotenv\Dotenv;
 use AEcalle\Oc\Php\Project5\Router\Router;
 use Symfony\Component\HttpFoundation\Request;
+
+$dotenv = new Dotenv();
+$dotenv->loadEnv('../.env');
 
 $request = Request::createFromGlobals();
 $router = new Router($request->getPathInfo());
