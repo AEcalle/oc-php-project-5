@@ -38,19 +38,24 @@
     <div id="contact" class="row gx-4 gx-lg-5 py-5 justify-content-center border-top">
         <div class="col-md-10 col-lg-8 col-xl-7">
             <h2>Contact</h2>
-            <div class="text-{{form.colorFlashMessage}} small">{{form.flashMessage}}</div> 
+            {% for errorMessage in form.constraintViolation %}
+                <div class="text-danger small">{{errorMessage}}</div> 
+            {% endfor %}
+            {% if form.constraintViolation is empty %}
+                <div class="text-success small">Votre message a bien été envoyé !</div> 
+            {% endif %}
             <form id="contactForm" method="post" action="#contact">
-            <input type="hidden" name="contact_token" id="contact_token" value="{{form.token}}">
+            <input type="hidden" name="{{form.name}}_token" id="{{form.name}}_token" value="{{form.token}}">
                 <div class="form-floating">
-                    <input class="form-control" id="name" name="name" type="text" placeholder="Nom et prénom" value="{{form.name}}" required />
+                    <input class="form-control" id="name" name="name" type="text" placeholder="Nom et prénom" value="{{contact.name}}" required />
                     <label for="name">Nom Prénom</label>                            
                 </div>
                 <div class="form-floating">
-                    <input class="form-control" id="email" name="email" type="email" placeholder="Email" value="{{form.email}}" required />
+                    <input class="form-control" id="email" name="email" type="email" placeholder="Email" value="{{contact.email}}" required />
                     <label for="email">Email</label>                            
                 </div>                      
                 <div class="form-floating">
-                    <textarea class="form-control" id="message" name="message" placeholder="Message" style="height: 12rem" required>{{form.message}}</textarea>
+                    <textarea class="form-control" id="message" name="message" placeholder="Message" style="height: 12rem" required>{{contact.message}}</textarea>
                     <label for="message">Message</label>                            
                 </div>                                               
                 <button class="btn btn-primary my-5 text-uppercase" id="submitButton" type="submit">Envoyer</button>

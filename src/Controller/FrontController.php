@@ -4,10 +4,9 @@ namespace AEcalle\Oc\Php\Project5\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 use AEcalle\Oc\Php\Project5\Service\MailerService;
-use AEcalle\Oc\Php\Project5\Service\ValidatorService;
-use AEcalle\Oc\Php\Project5\Form\ContactForm;
+use AEcalle\Oc\Php\Project5\Entity\Contact;
+use AEcalle\Oc\Php\Project5\Form\Form;
 use AEcalle\Oc\Php\Project5\Repository\PostRepository;
-use AEcalle\Oc\Php\Project5\Service\TokenCSRFManager;
 
 class FrontController extends AbstractController
 {
@@ -19,31 +18,20 @@ class FrontController extends AbstractController
         
 
         //Form Contact
-        $form = new ContactForm();                       
+        $form = new Form(new Contact(),'Contact');                       
                     
-        $form = $form->handleRequest($this->request);
+        $contact = $form->handleRequest($this->request);
         
-        if ($form->isSubmitted())
-        {                     
-            $tokenCSRFManager = new TokenCSRFManager();
-            if ($tokenCSRFManager->verifToken('contact',$this->request))
-            {             
-                $isEmailCorrect = ValidatorService::isEmailCorrect($form->getEmail());
-
-                if ($isEmailCorrect['test']){       
-                    //Send an email         
-                    MailerService::sendEmail($form->getEmail(),$form->getName(),$form->getMessage());
-                    $form->setFlashMessage('Votre message a bien été envoyé !');
-                    $form->setColorFlashMessage('success');                   
-                }else{                              
-                    $form->setFlashMessage($isEmailCorrect['message']);
-                }
-            }              
+        if ($form->isSubmitted() && $form->isValid())
+        {     
+            //Send an email         
+            MailerService::sendEmail($contact);                       
         }        
       
         return $this->render('front/home.html.twig', [
             'posts'=>$posts,         
-            'form'=>$form          
+            'contact'=>$contact,    
+            'form'=>$form      
         ]);
     }
     
