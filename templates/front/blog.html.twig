@@ -27,11 +27,24 @@
                     <a href="#">Aurélien Ecalle</a>
                     {{post.updatedAt|date("d/m/Y")}}
                 </p>
-            </div>
-       
+            </div>                       
             <hr class="my-4" />                      
-            {% endfor %}                   
-            
+            {% endfor %}  
+            {% if nbPages > 1 %}
+                {% set before = page - 1 %}
+                {% set next = page + 1 %}  
+                <div class="pagination mb-5">
+                    {% if page >1 %}
+                        <a class="me-3" href="../blog/{{before}}"><</a>
+                    {% endif %}                     
+                    {% for i in 1 .. nbPages %}
+                        <a class="me-3 {% if i == page %}text-info{% endif %}" href="../blog/{{i}}">{{i}}</a>
+                    {% endfor %}
+                    {% if page < nbPages %}
+                        <a class="me-3" href="../blog/{{next}}">></a>
+                    {% endif %} 
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>
