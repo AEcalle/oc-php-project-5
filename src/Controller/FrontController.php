@@ -21,12 +21,12 @@ class FrontController extends AbstractController
         //Form Contact
         $form = new ContactForm();                       
                     
-        $form = $form->handleRequest();
+        $form = $form->handleRequest($this->request);
         
         if ($form->isSubmitted())
         {                     
             $tokenCSRFManager = new TokenCSRFManager();
-            if ($tokenCSRFManager->verifToken('contact'))
+            if ($tokenCSRFManager->verifToken('contact',$this->request))
             {             
                 $isEmailCorrect = ValidatorService::isEmailCorrect($form->getEmail());
 

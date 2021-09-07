@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 final class Router
 {
-    private string $url;
+    private Request $request;
 
     /**
      * @var Route[]
@@ -18,9 +18,9 @@ final class Router
      */
     private array $namedRoutes = [];
 
-    public function __construct(string $url)
+    public function __construct(Request $request)
     {
-        $this->url = $url;
+        $this->request = $request;
     }
 
     /**
@@ -61,14 +61,12 @@ final class Router
 
     public function run(): ?string
     {
-        $request = Request::createFromGlobals();
-
-        if (!isset($this->routes[$request->getMethod()])) {
+        if (!isset($this->routes[$this->request->getMethod()])) {
             throw new RouterException('REQUEST_METHOD doesn\'t exist');
         }
 
-        foreach ($this->routes[$request->getMethod()] as $route) {
-            if ($route->match($this->url)) {
+        foreach ($this->routes[$this->request->getMethod()] as $route) {
+            if ($route->match($this->request->getPathInfo())) {
                 return $route->call($this);
             }
         }
@@ -89,5 +87,10 @@ final class Router
         }
        
         return $this->namedRoutes[$name]->getUrl($params);
+    }
+    
+    public function getRequest(): Request
+    {
+        return $this->request;
     }
 }

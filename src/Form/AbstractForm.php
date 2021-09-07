@@ -6,27 +6,21 @@ use Symfony\Component\HttpFoundation\Request;
 use AEcalle\Oc\Php\Project5\Service\TokenCSRFManager;
 
 abstract class AbstractForm 
-{    
-    protected static Request $request;    
+{  
+    private ?Request $request = null;
     protected string $token;     
 
     public function __construct()
-    {
-        self::$request = Request::createFromGlobals();
+    {    
         $tokenCSRFManager = new TokenCSRFManager();
         $this->token = $tokenCSRFManager->createToken('contact'); 
-    }
-    
-    public function isSubmitted(): bool
-    {        
-        if (self::$request->getMethod() === 'POST')
-            return true;
-        return false;
-    }
+    }  
 
-    public function handleRequest()
+    public function handleRequest(Request $request)
     {         
-        $data = self::$request->request->all();  
+        $this->request = $request;
+
+        $data = $request->request->all();  
         unset($data['contact_token']);
         
         foreach ($data as $k=>$v)
@@ -37,5 +31,12 @@ abstract class AbstractForm
         }
 
         return $this;
+    }
+
+    public function isSubmitted(): bool
+    {        
+        if ($this->request->getMethod() === 'POST')
+            return true;
+        return false;
     }
 }

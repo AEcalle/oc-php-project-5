@@ -9,8 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 $dotenv = new Dotenv();
 $dotenv->loadEnv('../.env');
 
-$request = Request::createFromGlobals();
-$router = new Router($request->getPathInfo());
+$router = new Router(Request::createFromGlobals());
 
 $router->get('/','FrontController#home','home');
 $router->post('/','FrontController#home','home');
@@ -20,7 +19,5 @@ $router->get('/post/:id-:slug',function($id,$slug)
 $router->post('/post/:id-:slug',function($id,$slug){echo 'Poster un commentaire pour l\'article '. $id;});
 $router->get('/login',function(){echo 'Se connecter';});
 $router->get('/legal',function(){echo 'Mentions légales';});
-
-
 
 $router->run();
