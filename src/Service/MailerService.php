@@ -8,7 +8,7 @@ use Symfony\Component\Mime\Email;
 
 final class MailerService
 {  
-    public static function sendEmail(Contact $contact): void
+    public function sendEmail(Contact $contact): void
     {
         $transport = Transport::fromDsn("smtp://{$_ENV['SMTP_HOST']}?encryption=ssl&auth_mode=login&username={$_ENV['SMTP_USERNAME']}&password={$_ENV['SMTP_PASSWORD']}");
         $mailer = new Mailer($transport);    

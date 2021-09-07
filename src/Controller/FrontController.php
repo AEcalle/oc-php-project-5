@@ -24,8 +24,9 @@ class FrontController extends AbstractController
         
         if ($form->isSubmitted() && $form->isValid())
         {     
-            //Send an email         
-            MailerService::sendEmail($contact);                       
+            //Send an email 
+            $mailerService = new MailerService();        
+            $mailerService->sendEmail($contact);                       
         }        
       
         return $this->render('front/home.html.twig', [
