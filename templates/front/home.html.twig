@@ -40,10 +40,9 @@
             <h2>Contact</h2>
             {% for errorMessage in form.constraintViolation %}
                 <div class="text-danger small">{{errorMessage}}</div> 
-            {% endfor %}
-            {% if form.constraintViolation is empty %}
-                <div class="text-success small">Votre message a bien été envoyé !</div> 
-            {% endif %}
+            {% endfor %}           
+            <div class="text-success small">{{successMessage}}</div> 
+        
             <form id="contactForm" method="post" action="#contact">
             <input type="hidden" name="{{form.name}}_token" id="{{form.name}}_token" value="{{form.token}}">
                 <div class="form-floating">
