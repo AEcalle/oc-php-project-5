@@ -59,9 +59,19 @@ abstract class AbstractRepository
      * @var Object[]
      */
 
-    public function findBy(int $offset, int $nbRows): array
+    public function findBy(array $criteria,int $offset, int $nbRows): array
     {
-        $q = self::$db->prepare("SELECT * FROM $this->table ORDER BY id DESC LIMIT :offset,:nbRows");
+        $where = "";
+        if (!empty($criteria))
+        {
+            $where = "WHERE ";
+            foreach($criteria as $k=>$v)
+            {
+                $where .= "$k = $v";
+            }
+        }        
+        
+        $q = self::$db->prepare("SELECT * FROM $this->table $where ORDER BY id DESC LIMIT :offset,:nbRows");
         $q->bindValue(':offset', $offset, \PDO::PARAM_INT);
         $q->bindValue(':nbRows', $nbRows, \PDO::PARAM_INT);
         $q->execute();
