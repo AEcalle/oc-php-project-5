@@ -1,0 +1,60 @@
+{% extends "front/template.html.twig" %}
+{% block body %}
+
+<!-- Page Header-->
+<header class="masthead" style="background-image: url('../assets/img/post-bg.jpg')">
+    <div class="container position-relative px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <div class="post-heading">
+                    <h1>{{post.title}}</h1>
+                    <h2 class="subheading">{{post.standfirst}}</h2>
+                    <span class="meta">
+                        Publié par
+                        <a href="#!">Aurélien Ecalle</a>
+                        le {{post.updatedAt|date("d/m/Y")}}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- Post Content-->
+<article class="mb-4">
+    <div class="container px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                {{post.content}}
+                <hr class="my-4" />
+            </div>
+        </div>
+    </div>
+</article>
+<div class="container px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+        <div class="col-md-10 col-lg-8 col-xl-7">
+            <h2>Envoyer un commentaire</h2>
+            <form id="contactForm" method="post">
+                <div class="form-floating">
+                    <input class="form-control" id="name" type="text" placeholder="Nom et prénom" required />
+                    <label for="name">Pseudo</label>                            
+                </div>         
+                <div class="form-floating">
+                    <textarea class="form-control" id="message" placeholder="Message" style="height: 12rem" required></textarea>
+                    <label for="message">Commentaire</label>                            
+                </div>                                               
+                <button class="btn btn-primary my-5 text-uppercase" id="submitButton" type="submit">Envoyer</button>
+            </form>
+            <h2>Commentaires</h2>
+            <p>Super Article !</p>
+            <p class="fst-italic fw-light small">Bob le 16/08/2021 à 10:25</p>
+            <hr class="my-4" />
+            <p>Bof !</p>
+            <p class="fst-italic fw-light small">Alice le 16/08/2021 à 10:10</p>
+            
+            
+        </div>
+    </div>
+</div>
+
+{% endblock %}

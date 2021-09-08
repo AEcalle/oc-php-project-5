@@ -55,5 +55,13 @@ class FrontController extends AbstractController
             'nbPages'=>$nbPages
         ]);
     }
+
+    public function post(int $id): Response
+    {
+        $postRepository = new PostRepository();
+        $post = $postRepository->find($id);
+        
+        return $this->render('front/post.html.twig',['post'=>$post]);
+    }
     
 }
