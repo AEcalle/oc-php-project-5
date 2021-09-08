@@ -4,6 +4,7 @@ namespace AEcalle\Oc\Php\Project5\Controller;
 
 use AEcalle\Oc\Php\Project5\Router\Router;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
@@ -11,10 +12,12 @@ use Twig\Loader\FilesystemLoader;
 abstract class AbstractController
 {
     private Router $router;
+    protected Request $request;
 
     public function __construct(Router $router)
     {
         $this->router = $router;
+        $this->request = $this->router->getRequest();
     }
 
     /**

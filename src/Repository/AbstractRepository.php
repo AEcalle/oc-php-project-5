@@ -11,7 +11,7 @@ abstract class AbstractRepository
     public function __construct()
     {
         try {
-            self::$db = new \PDO('mysql:host=Blog;dbname=blog;charset=utf8', 'root', '');
+            self::$db = new \PDO("mysql:host={$_ENV['DB_HOST']};dbname={$_ENV['DB_NAME']};charset=utf8", $_ENV['DB_USERNAME'], $_ENV['DB_PASSWORD']);
             self::$db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         } catch (\Exception $e) {
             die('Erreur : ' . $e->getMessage());
