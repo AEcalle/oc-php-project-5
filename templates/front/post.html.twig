@@ -46,11 +46,11 @@
                 <button class="btn btn-primary my-5 text-uppercase" id="submitButton" type="submit">Envoyer</button>
             </form>
             <h2>Commentaires</h2>
-            <p>Super Article !</p>
-            <p class="fst-italic fw-light small">Bob le 16/08/2021 à 10:25</p>
-            <hr class="my-4" />
-            <p>Bof !</p>
-            <p class="fst-italic fw-light small">Alice le 16/08/2021 à 10:10</p>
+            {% for comment in comments %}
+                <p>{{comment.content}}</p>
+                <p class="fst-italic fw-light small">{{comment.writer}} le {{comment.createdAt|date("d/m/Y")}} à {{comment.createdAt|date("H:i")}}</p>
+                <hr class="my-4" />
+            {% endfor %}
             
             
         </div>

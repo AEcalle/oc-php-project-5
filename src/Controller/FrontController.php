@@ -63,9 +63,13 @@ class FrontController extends AbstractController
         $post = $postRepository->find($id);
 
         $commentRepository = new CommentRepository();
-        $comments = $commentRepository->findBy(['post_id'=>$id],0,10);       
+        $comments = $commentRepository->findBy(['post_id'=>$id],0,50);       
         
-        return $this->render('front/post.html.twig',['post'=>$post]);
+        return $this->render('front/post.html.twig',[
+            'post'=>$post,
+            'comments' => $comments
+        
+        ]);
     }
     
 }
