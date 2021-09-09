@@ -68,6 +68,9 @@ abstract class AbstractRepository
             foreach($criteria as $k=>$v)
             {
                 $where .= "$k = $v";
+                if ($k !== array_key_last($criteria)) {
+                    $where .= " AND ";
+                }
             }
         }        
         

@@ -9,15 +9,15 @@ class CommentRepository extends AbstractRepository
 {
     protected string $table = 'comment';
 
-    public function add(string $content, string $createdAt, string $writer, int $postId): Comment 
+    public function add(Comment $comment): Comment 
     {
         $q = parent::$db->prepare("INSERT INTO $this->table(content, created_at, writer, post_id) 
         VALUES(:content, :created_at, :writer, :post_id)");
         $q->execute([           
-            ':content' => $content,
-            ':created_at' => $createdAt,
-            ':writer' => $writer,
-            ':post_id' => $postId
+            ':content' => $comment->getContent(),
+            ':created_at' => $comment->getCreatedAt()->format('Y-m-d H:i:s'),
+            ':writer' => $comment->getWriter(),
+            ':post_id' => $comment->getPostId()
         ]);
 
         $entity = $this->find(parent::$db->lastInsertId());

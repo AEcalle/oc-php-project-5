@@ -5,6 +5,7 @@ namespace AEcalle\Oc\Php\Project5\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use AEcalle\Oc\Php\Project5\Service\MailerService;
 use AEcalle\Oc\Php\Project5\Entity\Contact;
+use AEcalle\Oc\Php\Project5\Entity\Comment;
 use AEcalle\Oc\Php\Project5\Form\Form;
 use AEcalle\Oc\Php\Project5\Repository\CommentRepository;
 use AEcalle\Oc\Php\Project5\Repository\PostRepository;
@@ -59,16 +60,31 @@ class FrontController extends AbstractController
 
     public function post(int $id): Response
     {
-        $postRepository = new PostRepository();
-        $post = $postRepository->find($id);
-
         $commentRepository = new CommentRepository();
-        $comments = $commentRepository->findBy(['post_id'=>$id],0,50);       
+        $postRepository = new PostRepository();
+
+        $form = new Form(new Comment(),'Comment');
+
+        $comment = $form->handleRequest($this->request);
+
+        $successMessage = '';
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            $comment->setCreatedAt(new \DateTime());
+            $comment->setPostId($id);
+            $comment->setStatus(false);
+            $commentRepository->add($comment);
+            $successMessage = "Commentaire bien enregisté ! Il sera publié après validation par l'administrateur";
+        }        
+        
+        $post = $postRepository->find($id);        
+        $comments = $commentRepository->findBy(['post_id'=>$id,'status'=>true],0,50);         
         
         return $this->render('front/post.html.twig',[
+            'form'=>$form,
             'post'=>$post,
-            'comments' => $comments
-        
+            'comments' => $comments,
+            'successMessage' => $successMessage       
         ]);
     }
     

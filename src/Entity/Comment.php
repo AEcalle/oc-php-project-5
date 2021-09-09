@@ -2,12 +2,15 @@
 
 namespace AEcalle\Oc\Php\Project5\Entity;
 
+use Assert\Assertion;
+
 class Comment
 {
     private int $id;
     private string $content;
     private \DateTime $createdAt;
     private string $writer;
+    private bool $status;
     private int $postId;
  
     public function getId(): int
@@ -30,6 +33,8 @@ class Comment
     public function setContent(string $content): self
     {
         $this->content = $content;
+
+        Assertion::notEmpty($content,"Le champ commentaire doit être renseigné.");
 
         return $this;
     }
@@ -55,6 +60,20 @@ class Comment
     {
         $this->writer = $writer;
 
+        Assertion::notEmpty($writer,"Le champ utilisateur doit être renseigné.");
+
+        return $this;
+    }
+
+    public function getStatus(): bool
+    {
+        return $this->status;
+    }
+    
+    public function setStatus(bool $status): self
+    {
+        $this->status = $status;
+
         return $this;
     }
  
@@ -69,4 +88,6 @@ class Comment
 
         return $this;
     }
+
+    
 }
