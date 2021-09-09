@@ -11,12 +11,13 @@ class CommentRepository extends AbstractRepository
 
     public function add(Comment $comment): Comment 
     {
-        $q = parent::$db->prepare("INSERT INTO $this->table(content, created_at, writer, post_id) 
-        VALUES(:content, :created_at, :writer, :post_id)");
+        $q = parent::$db->prepare("INSERT INTO $this->table(content, created_at, writer, published, post_id) 
+        VALUES(:content, :created_at, :writer, :published, :post_id)");
         $q->execute([           
             ':content' => $comment->getContent(),
             ':created_at' => $comment->getCreatedAt()->format('Y-m-d H:i:s'),
             ':writer' => $comment->getWriter(),
+            ':published' => $comment->getPublished(),
             ':post_id' => $comment->getPostId()
         ]);
 
@@ -25,19 +26,20 @@ class CommentRepository extends AbstractRepository
         return $entity;
     }
 
-    public function update(int $id, string $content, string $createdAt, string $writer, int $postId): Comment 
+    public function update(Comment $comment): Comment 
     {
         $q = parent::$db->prepare("UPDATE $this->table SET content = :content, created_at = :created_at,
-        writer = :writer, post_id = :post_id WHERE id = :id");
+        writer = :writer, published = :published, post_id = :post_id WHERE id = :id");
         $q->execute([
-            ':id' => $id,      
-            ':content' => $content,
-            ':created_at' => $createdAt,
-            ':writer' => $writer,
-            ':post_id' => $postId
+            ':id' => $comment->getId(),      
+            ':content' => $comment->getContent(),
+            ':created_at' => $comment->getCreatedAt()->format('Y-m-d H:i:s'),
+            ':writer' => $comment->getWriter(),
+            ':published' => $comment->getPublished(),
+            ':post_id' => $comment->getPostId()
         ]);
 
-        $entity = $this->find($id);
+        $entity = $this->find($comment->getId());
 
         return $entity;
     }

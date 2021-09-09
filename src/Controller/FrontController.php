@@ -72,13 +72,13 @@ class FrontController extends AbstractController
         {
             $comment->setCreatedAt(new \DateTime());
             $comment->setPostId($id);
-            $comment->setStatus(false);
+            $comment->setPublished(false);
             $commentRepository->add($comment);
             $successMessage = "Commentaire bien enregisté ! Il sera publié après validation par l'administrateur";
         }        
         
         $post = $postRepository->find($id);        
-        $comments = $commentRepository->findBy(['post_id'=>$id,'status'=>true],0,50);         
+        $comments = $commentRepository->findBy(['post_id'=>$id,'published'=>1],0,50);         
         
         return $this->render('front/post.html.twig',[
             'form'=>$form,

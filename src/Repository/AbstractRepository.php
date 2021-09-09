@@ -67,7 +67,15 @@ abstract class AbstractRepository
             $where = "WHERE ";
             foreach($criteria as $k=>$v)
             {
-                $where .= "$k = $v";
+                if (is_string($v))
+                {
+                    $where .= "$k = '$v'";
+                }
+                else
+                {
+                    $where .= "$k = $v";
+                }
+                
                 if ($k !== array_key_last($criteria)) {
                     $where .= " AND ";
                 }
@@ -76,7 +84,7 @@ abstract class AbstractRepository
         
         $q = self::$db->prepare("SELECT * FROM $this->table $where ORDER BY id DESC LIMIT :offset,:nbRows");
         $q->bindValue(':offset', $offset, \PDO::PARAM_INT);
-        $q->bindValue(':nbRows', $nbRows, \PDO::PARAM_INT);
+        $q->bindValue(':nbRows', $nbRows, \PDO::PARAM_INT); 
         $q->execute();
         $entities = [];
         while ($data = $q->fetch(\PDO::FETCH_ASSOC)) {
@@ -89,7 +97,7 @@ abstract class AbstractRepository
     }    
 
     protected function createEntity(array $data): Object
-    {
+    {        
         $entity = new $this->class();
         foreach ($data as $k => $v) {
             $methodExploded = explode('_', $k);

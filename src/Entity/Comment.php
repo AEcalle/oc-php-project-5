@@ -10,7 +10,7 @@ class Comment
     private string $content;
     private \DateTime $createdAt;
     private string $writer;
-    private bool $status;
+    private bool $published;
     private int $postId;
  
     public function getId(): int
@@ -65,14 +65,14 @@ class Comment
         return $this;
     }
 
-    public function getStatus(): bool
+    public function getPublished(): bool
     {
-        return $this->status;
+        return $this->published;
     }
     
-    public function setStatus(bool $status): self
+    public function setPublished(bool $published): self
     {
-        $this->status = $status;
+        $this->published = $published;
 
         return $this;
     }
