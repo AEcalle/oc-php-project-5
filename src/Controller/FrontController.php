@@ -16,7 +16,7 @@ class FrontController extends AbstractController
     {       
         // Get the latest posts
         $postRepository = new PostRepository();        
-        $posts = $postRepository->findBy([],0,2);
+        $posts = $postRepository->findBy([],['updated_at'=>'DESC'],0,2);
         
 
         //Form Contact
@@ -46,7 +46,7 @@ class FrontController extends AbstractController
         $index = ($page-1)*10;
      
         $postRepository = new PostRepository();        
-        $posts = $postRepository->findBy([],$index,10);   
+        $posts = $postRepository->findBy([],['updated_at'=>'DESC'],$index,10);   
         
         $nbPosts = $postRepository->count();
         $nbPages = intdiv($nbPosts,10) + 1;
@@ -78,7 +78,7 @@ class FrontController extends AbstractController
         }        
         
         $post = $postRepository->find($id);        
-        $comments = $commentRepository->findBy(['post_id'=>$id,'published'=>1],0,50);         
+        $comments = $commentRepository->findBy(['post_id'=>$id,'published'=>1],['created_at'=>'DESC'],0,50);         
         
         return $this->render('front/post.html.twig',[
             'form'=>$form,

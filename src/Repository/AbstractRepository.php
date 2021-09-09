@@ -38,7 +38,7 @@ abstract class AbstractRepository
     }
 
     /**
-     * @var Object[]
+     * @return Object[]
      */
 
     public function findAll(): array
@@ -56,35 +56,50 @@ abstract class AbstractRepository
     }
 
     /**
-     * @var Object[]
+     * @return Object[]
      */
 
-    public function findBy(array $criteria,int $offset, int $nbRows): array
+    public function findBy(array $criteria, array $orderBy, int $offset, int $nbRows): array
     {
-        $where = "";
+        $whereClause = "";
         if (!empty($criteria))
         {
-            $where = "WHERE ";
+            $whereClause = "WHERE ";
             foreach($criteria as $k=>$v)
             {
                 if (is_string($v))
                 {
-                    $where .= "$k = '$v'";
+                    $whereClause .= "$k = '$v'";
                 }
                 else
                 {
-                    $where .= "$k = $v";
+                    $whereClause .= "$k = $v";
                 }
                 
-                if ($k !== array_key_last($criteria)) {
-                    $where .= " AND ";
+                if ($k !== array_key_last($criteria)) 
+                {
+                    $whereClause .= " AND ";
                 }
             }
-        }        
+        } 
         
-        $q = self::$db->prepare("SELECT * FROM $this->table $where ORDER BY id DESC LIMIT :offset,:nbRows");
+        $orderClause = "";
+        if (!empty($orderBy))
+        {
+            $orderClause = "ORDER BY ";
+            foreach ($orderBy as $k=>$v)
+            {
+                $orderClause .= "$k $v";
+                if ($k !== array_key_last($orderBy)) 
+                {
+                    $orderClause .= ", ";
+                }
+            }
+        }
+      
+        $q = self::$db->prepare("SELECT * FROM $this->table $whereClause $orderClause LIMIT :offset,:nbRows");
         $q->bindValue(':offset', $offset, \PDO::PARAM_INT);
-        $q->bindValue(':nbRows', $nbRows, \PDO::PARAM_INT); 
+        $q->bindValue(':nbRows', $nbRows, \PDO::PARAM_INT);       
         $q->execute();
         $entities = [];
         while ($data = $q->fetch(\PDO::FETCH_ASSOC)) {
