@@ -22,21 +22,21 @@ class FrontController extends AbstractController
         //Form Contact
         $form = new Form(new Contact(),'Contact');                       
                     
-        $contact = $form->handleRequest($this->request);
-        $successMessage = '';
+        $contact = $form->handleRequest($this->request);      
+  
         if ($form->isSubmitted() && $form->isValid())
         {     
             //Send an email 
             $mailerService = new MailerService();        
-            $mailerService->sendEmail($contact);
-            $successMessage = "Votre message a bien été envoyé !";                       
+            $mailerService->sendEmail($contact);           
+            $this->session->getFlashBag()->add('success',"Votre message a bien été envoyé !");   
+            return $this->redirect('home');                    
         }        
-      
+        
         return $this->render('front/home.html.twig', [
             'posts'=>$posts,         
             'contact'=>$contact,    
-            'form'=>$form,
-            'successMessage'=>$successMessage    
+            'form'=>$form,             
         ]);
     }
 
@@ -58,7 +58,7 @@ class FrontController extends AbstractController
         ]);
     }
 
-    public function post(int $id): Response
+    public function post(int $id, string $slug): Response
     {
         $commentRepository = new CommentRepository();
         $postRepository = new PostRepository();
@@ -66,15 +66,15 @@ class FrontController extends AbstractController
         $form = new Form(new Comment(),'Comment');
 
         $comment = $form->handleRequest($this->request);
-
-        $successMessage = '';
+       
         if ($form->isSubmitted() && $form->isValid())
         {
             $comment->setCreatedAt(new \DateTime());
             $comment->setPostId($id);
             $comment->setPublished(false);
-            $commentRepository->add($comment);
-            $successMessage = "Commentaire bien enregisté ! Il sera publié après validation par l'administrateur";
+            $commentRepository->add($comment);        
+            $this->session->getFlashBag()->add('success','Commentaire bien enregisté ! Il sera publié après validation par l\'administrateur.');   
+            return $this->redirect('post',['id'=>$id,'slug'=>$slug]);
         }        
         
         $post = $postRepository->find($id);        
@@ -83,8 +83,7 @@ class FrontController extends AbstractController
         return $this->render('front/post.html.twig',[
             'form'=>$form,
             'post'=>$post,
-            'comments' => $comments,
-            'successMessage' => $successMessage       
+            'comments' => $comments             
         ]);
     }
     

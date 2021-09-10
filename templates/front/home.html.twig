@@ -40,8 +40,10 @@
             <h2>Contact</h2>
             {% for errorMessage in form.constraintViolation %}
                 <div class="text-danger small">{{errorMessage}}</div> 
-            {% endfor %}           
-            <div class="text-success small">{{successMessage}}</div> 
+            {% endfor %} 
+            {% for message in session.getFlashBag.get('success') %}          
+                <div class="text-success small">{{ message }}</div> 
+            {% endfor %}
         
             <form id="contactForm" method="post" action="#contact">
             <input type="hidden" name="{{form.name}}_token" id="{{form.name}}_token" value="{{form.token}}">
