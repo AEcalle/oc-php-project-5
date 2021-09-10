@@ -93,11 +93,19 @@ abstract class AbstractRepository
     }
 
     public function delete($id): void
-    {
-        $table = $this->table;
-        $q = self::$db->prepare("DELETE FROM $table WHERE id = :id");
+    {        
+        $q = self::$db->prepare("DELETE FROM $this->table WHERE id = :id");
         $q->execute([
             ':id' => $id
         ]);
+    }
+
+    public function count(): int
+    {
+        $q = self::$db->prepare("SELECT COUNT(id) FROM $this->table");
+        $q->execute();        
+        $data = $q->fetch(\PDO::FETCH_ASSOC);
+
+        return intval($data['COUNT(id)']);
     }
 }

@@ -37,5 +37,23 @@ class FrontController extends AbstractController
             'successMessage'=>$successMessage    
         ]);
     }
+
+    public function blog(string $page): Response
+    {
+        $page = intval($page);
+        $index = ($page-1)*10;
+     
+        $postRepository = new PostRepository();        
+        $posts = $postRepository->findBy($index,10);   
+        
+        $nbPosts = $postRepository->count();
+        $nbPages = intdiv($nbPosts,10) + 1;
+       
+        return $this->render('front/blog.html.twig',[
+            'posts'=>$posts,
+            'page'=>$page,
+            'nbPages'=>$nbPages
+        ]);
+    }
     
 }
