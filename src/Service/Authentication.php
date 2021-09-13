@@ -7,11 +7,6 @@ class Authentication
 {      
     public function check(Session $session): bool
     {        
-        if (null === $session->get('userId'))
-        {            
-            return false;
-        }
-
-        return true;
+        return null != $session->get('userId');  
     }    
 }
