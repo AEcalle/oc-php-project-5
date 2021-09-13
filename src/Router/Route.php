@@ -27,8 +27,8 @@ final class Route
      * @var string|callable
      */
     public function __construct(string $path, $callable)
-    {
-        $this->path = trim($path,'/');
+    {        
+        $this->path = $path;       
         $this->callable = $callable;
     }    
    
@@ -39,9 +39,7 @@ final class Route
     }    
   
     public function match(string $url): bool
-    {         
-        $url = trim($url,"/");
-    
+    {   
         $path = preg_replace_callback('#:([a-zA-Z0-9_]+)+#', [$this,'paramMatch'], $this->path);
         
         $regex = "#^$path$#i";

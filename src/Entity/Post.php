@@ -6,6 +6,7 @@ class Post
 {
     private int $id;
     private string $title;
+    private string $slug;
     private string $standfirst;
     private string $content;
     private \DateTime $createdAt;
@@ -32,6 +33,18 @@ class Post
     public function setTitle(string $title): self
     {
         $this->title = $title;
+
+        return $this;
+    }
+    
+    public function getSlug(): string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
 
         return $this;
     }
@@ -94,5 +107,5 @@ class Post
         $this->userId = $userId;
 
         return $this;
-    }
+    } 
 }

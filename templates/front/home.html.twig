@@ -19,7 +19,7 @@
         <div class="col-md-10 col-lg-8 col-xl-7">
             {% for post in posts %}
             <div class="post-preview">
-                <a href="post.php">
+                <a href="../post/{{post.id}}-{{post.slug}}">
                     <h2 class="post-title">{{post.title}}</h2>
                     <h3 class="post-subtitle">{{post.standfirst}}</h3>
                 </a>
@@ -40,8 +40,10 @@
             <h2>Contact</h2>
             {% for errorMessage in form.constraintViolation %}
                 <div class="text-danger small">{{errorMessage}}</div> 
-            {% endfor %}           
-            <div class="text-success small">{{successMessage}}</div> 
+            {% endfor %} 
+            {% for message in session.getFlashBag.get('success') %}          
+                <div class="text-success small">{{ message }}</div> 
+            {% endfor %}
         
             <form id="contactForm" method="post" action="#contact">
             <input type="hidden" name="{{form.name}}_token" id="{{form.name}}_token" value="{{form.token}}">

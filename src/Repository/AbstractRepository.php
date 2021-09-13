@@ -38,7 +38,7 @@ abstract class AbstractRepository
     }
 
     /**
-     * @var Object[]
+     * @return Object[]
      */
 
     public function findAll(): array
@@ -56,14 +56,50 @@ abstract class AbstractRepository
     }
 
     /**
-     * @var Object[]
+     * @return Object[]
      */
 
-    public function findBy(int $offset, int $nbRows): array
+    public function findBy(array $criteria, array $orderBy, int $offset, int $nbRows): array
     {
-        $q = self::$db->prepare("SELECT * FROM $this->table ORDER BY id DESC LIMIT :offset,:nbRows");
+        $whereClause = "";
+        if (!empty($criteria))
+        {
+            $whereClause = "WHERE ";
+            foreach($criteria as $k=>$v)
+            {
+                if (is_string($v))
+                {
+                    $whereClause .= "$k = '$v'";
+                }
+                else
+                {
+                    $whereClause .= "$k = $v";
+                }
+                
+                if ($k !== array_key_last($criteria)) 
+                {
+                    $whereClause .= " AND ";
+                }
+            }
+        } 
+        
+        $orderClause = "";
+        if (!empty($orderBy))
+        {
+            $orderClause = "ORDER BY ";
+            foreach ($orderBy as $k=>$v)
+            {
+                $orderClause .= "$k $v";
+                if ($k !== array_key_last($orderBy)) 
+                {
+                    $orderClause .= ", ";
+                }
+            }
+        }
+      
+        $q = self::$db->prepare("SELECT * FROM $this->table $whereClause $orderClause LIMIT :offset,:nbRows");
         $q->bindValue(':offset', $offset, \PDO::PARAM_INT);
-        $q->bindValue(':nbRows', $nbRows, \PDO::PARAM_INT);
+        $q->bindValue(':nbRows', $nbRows, \PDO::PARAM_INT);       
         $q->execute();
         $entities = [];
         while ($data = $q->fetch(\PDO::FETCH_ASSOC)) {
@@ -76,7 +112,7 @@ abstract class AbstractRepository
     }    
 
     protected function createEntity(array $data): Object
-    {
+    {        
         $entity = new $this->class();
         foreach ($data as $k => $v) {
             $methodExploded = explode('_', $k);
