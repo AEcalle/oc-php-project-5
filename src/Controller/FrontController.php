@@ -6,9 +6,11 @@ use Symfony\Component\HttpFoundation\Response;
 use AEcalle\Oc\Php\Project5\Service\MailerService;
 use AEcalle\Oc\Php\Project5\Entity\Contact;
 use AEcalle\Oc\Php\Project5\Entity\Comment;
+use AEcalle\Oc\Php\Project5\Entity\User;
 use AEcalle\Oc\Php\Project5\Form\Form;
 use AEcalle\Oc\Php\Project5\Repository\CommentRepository;
 use AEcalle\Oc\Php\Project5\Repository\PostRepository;
+use AEcalle\Oc\Php\Project5\Repository\UserRepository;
 
 class FrontController extends AbstractController
 {
@@ -89,8 +91,27 @@ class FrontController extends AbstractController
 
     public function login(): Response
     {
+        $form = new Form(new User(),'Login');
 
-        return $this->render(('front/login.html.twig'));
+        $user = $form->handleRequest($this->request);
+       
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            $userRepository = new UserRepository();
+            $checkIfUserExist = $userRepository->findBy(['email'=>$user->getEmail(),'password'=>$user->getPassword()],[],0,1);
+            
+            if (empty($checkIfUserExist))
+            {
+                $this->session->getFlashBag()->add('warning','Identifiants incorrects');   
+                return $this->redirect('login');
+            }
+            
+            $this->session->getFlashBag()->add('success','Vous êtes connecté !');   
+            return $this->redirect('createPost');
+
+        }
+
+        return $this->render('front/login.html.twig',['form'=>$form]);
     }
     
 }

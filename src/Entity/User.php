@@ -9,7 +9,7 @@ class User
     private int $id;
     private string $email;
     private string $password;
-    private \DateTime $created_at;    
+    private \DateTime $createdAt;    
 
     public function getId(): int
     {
@@ -52,14 +52,14 @@ class User
         return $this;
     }
    
-    public function getCreated_at(): \DateTime
+    public function getCreatedAt(): \DateTime
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
-    public function setCreated_at(\DateTime $created_at): self
+    public function setCreatedAt(\DateTime $createdAt): self
     {
-        $this->created_at = $created_at;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
