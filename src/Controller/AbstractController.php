@@ -3,6 +3,7 @@
 namespace AEcalle\Oc\Php\Project5\Controller;
 
 use AEcalle\Oc\Php\Project5\Router\Router;
+use AEcalle\Oc\Php\Project5\Service\Authentication;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,12 +16,14 @@ abstract class AbstractController
     private Router $router;
     protected Request $request;
     protected Session $session;
+    protected Authentication $authentification;
 
     public function __construct(Router $router)
     {
         $this->router = $router;
         $this->request = $this->router->getRequest();
         $this->session = new Session();
+        $this->authentification = new Authentication();
     }
 
     /**
@@ -45,4 +48,25 @@ abstract class AbstractController
         $path = $this->router->generateUrl($route, $context);
         return new RedirectResponse($path);
     }
+
+    public function checkAuth(): bool
+    {
+        try
+        {
+            if (!$this->authentification->check($this->session))
+            {                      
+                throw new ControllerException("Acces Denied");
+            }
+            
+            return true;
+        }
+        catch (ControllerException $e)
+        {
+            $this->session->getFlashBag()->add('warning','Message: ' .$e->getMessage()); 
+            
+            return false;
+        } 
+       
+    }
+    
 }
