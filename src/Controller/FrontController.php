@@ -104,9 +104,10 @@ class FrontController extends AbstractController
             {
                 $this->session->getFlashBag()->add('warning','Identifiants incorrects');   
                 return $this->redirect('login');
-            }
+            }            
+            $user = $checkIfUserExist[0];
+            $this->session->set('userId',$user->getId());
             
-            $this->session->getFlashBag()->add('success','Vous êtes connecté !');   
             return $this->redirect('createPost');
 
         }

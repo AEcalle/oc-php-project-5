@@ -20,6 +20,6 @@ $router->post('/post/:id-:slug','FrontController#post','post')->width('id','[0-9
 $router->get('/login','FrontController#login','login');
 $router->post('/login','FrontController#login','login');
 $router->get('/legal',function(){echo 'Mentions légales';});
-$router->get('/createPost',function(){echo 'Ajouter un post';},'createPost');
+$router->get('/createPost','BackController#createPost','createPost');
 
 $router->run();
