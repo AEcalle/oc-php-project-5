@@ -86,5 +86,11 @@ class FrontController extends AbstractController
             'comments' => $comments             
         ]);
     }
+
+    public function login(): Response
+    {
+
+        return $this->render(('front/login.html.twig'));
+    }
     
 }
