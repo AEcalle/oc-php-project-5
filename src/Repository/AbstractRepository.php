@@ -114,9 +114,14 @@ abstract class AbstractRepository
         return $entities;
     } 
     
-    public function findOneBy(array $criteria): Object
+    public function findOneBy(array $criteria): ?Object
     {
         $entities = $this->findBy($criteria,[],0,1);
+        
+        if (empty($entities))
+        {
+            return null;
+        }
 
         return $entities[0];
     }

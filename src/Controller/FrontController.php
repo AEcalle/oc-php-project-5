@@ -98,15 +98,23 @@ class FrontController extends AbstractController
         if ($form->isSubmitted() && $form->isValid())
         {
             $userRepository = new UserRepository();
-            $userVerified = $userRepository->findOneBy(['email'=>$user->getEmail(),'password'=>$user->getPassword()]);
-            
-            if (!isset($userVerified ))
+            $userInDb = $userRepository->findOneBy(['email'=>$user->getEmail()]);
+
+            if (!isset($userInDb))
             {
-                $this->session->getFlashBag()->add('warning','Identifiants incorrects');   
+                $this->session->getFlashBag()->add('warning','Adresse email inconnue');   
+                return $this->redirect('login'); 
+            }
+            
+            $passwordVerify = password_verify($user->getPassword(),$userInDb->getPassword());
+            
+            if (!$passwordVerify)
+            {
+                $this->session->getFlashBag()->add('warning','Mot de passe incorrect');   
                 return $this->redirect('login');
             }            
             
-            $this->session->set('userId',$userVerified->getId());
+            $this->session->set('userId',$userInDb->getId());
             
             return $this->redirect('createPost');
 
