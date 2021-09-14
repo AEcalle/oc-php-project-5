@@ -61,25 +61,23 @@ abstract class AbstractRepository
 
     public function findBy(array $criteria, array $orderBy, int $offset, int $nbRows): array
     {
+        $parameters = [];
+
         $whereClause = "";
+        
         if (!empty($criteria))
         {
             $whereClause = "WHERE ";
             foreach($criteria as $k=>$v)
-            {
-                if (is_string($v))
-                {
-                    $whereClause .= "$k = '$v'";
-                }
-                else
-                {
-                    $whereClause .= "$k = $v";
-                }
+            {                
+                $whereClause .= "$k = :$k";               
                 
                 if ($k !== array_key_last($criteria)) 
                 {
                     $whereClause .= " AND ";
                 }
+                $k = ":$k";
+                $parameters[$k] = $v;
             }
         } 
         
@@ -93,14 +91,19 @@ abstract class AbstractRepository
                 if ($k !== array_key_last($orderBy)) 
                 {
                     $orderClause .= ", ";
-                }
+                }            
             }
-        }
-      
+        }       
+        
         $q = self::$db->prepare("SELECT * FROM $this->table $whereClause $orderClause LIMIT :offset,:nbRows");
-        $q->bindValue(':offset', $offset, \PDO::PARAM_INT);
-        $q->bindValue(':nbRows', $nbRows, \PDO::PARAM_INT);       
+        $q->bindValue(':offset',$offset,\PDO::PARAM_INT);  
+        $q->bindValue(':nbRows',$nbRows,\PDO::PARAM_INT);
+        foreach($parameters as $k=>$v)
+        {          
+            $q->bindValue($k,$v);
+        }      
         $q->execute();
+
         $entities = [];
         while ($data = $q->fetch(\PDO::FETCH_ASSOC)) {
             $entity = $this->createEntity($data);
