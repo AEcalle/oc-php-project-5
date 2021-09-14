@@ -112,7 +112,14 @@ abstract class AbstractRepository
 
 
         return $entities;
-    }    
+    } 
+    
+    public function findOneBy(array $criteria): Object
+    {
+        $entities = $this->findBy($criteria,[],0,1);
+
+        return $entities[0];
+    }
 
     protected function createEntity(array $data): Object
     {        

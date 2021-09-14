@@ -98,15 +98,15 @@ class FrontController extends AbstractController
         if ($form->isSubmitted() && $form->isValid())
         {
             $userRepository = new UserRepository();
-            $checkIfUserExist = $userRepository->findBy(['email'=>$user->getEmail(),'password'=>$user->getPassword()],[],0,1);
+            $userVerified = $userRepository->findOneBy(['email'=>$user->getEmail(),'password'=>$user->getPassword()]);
             
-            if (empty($checkIfUserExist))
+            if (!isset($userVerified ))
             {
                 $this->session->getFlashBag()->add('warning','Identifiants incorrects');   
                 return $this->redirect('login');
             }            
-            $user = $checkIfUserExist[0];
-            $this->session->set('userId',$user->getId());
+            
+            $this->session->set('userId',$userVerified->getId());
             
             return $this->redirect('createPost');
 
