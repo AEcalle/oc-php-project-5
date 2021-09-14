@@ -2,7 +2,7 @@
 
 namespace AEcalle\Oc\Php\Project5\Entity;
 
-class Post
+final class Post
 {
     private int $id;
     private string $title;

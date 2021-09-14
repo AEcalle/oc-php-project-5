@@ -4,7 +4,7 @@ namespace AEcalle\Oc\Php\Project5\Entity;
 
 use Assert\Assertion;
 
-class User 
+final class User 
 {
     private int $id;
     private string $email;

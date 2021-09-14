@@ -61,7 +61,7 @@ final class Router
 
     public function run(): ?string
     {
-        if (!isset($this->routes[$this->request->getMethod()])) {
+        if (! isset($this->routes[$this->request->getMethod()])) {
             throw new RouterException('REQUEST_METHOD doesn\'t exist');
         }
 
@@ -82,7 +82,7 @@ final class Router
 
     public function generateUrl(string $name, array $params): string
     {
-        if (!isset($this->namedRoutes[$name])) {
+        if (! isset($this->namedRoutes[$name])) {
             throw new RouterException('No route matches this name');
         }
        

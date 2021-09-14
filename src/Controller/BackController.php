@@ -5,7 +5,7 @@ namespace AEcalle\Oc\Php\Project5\Controller;
 use Exception;
 use Symfony\Component\HttpFoundation\Response;
 
-class BackController extends AbstractController
+final class BackController extends AbstractController
 {      
     public function createPost(): Response
     {

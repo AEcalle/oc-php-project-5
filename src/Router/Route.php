@@ -2,8 +2,6 @@
 
 namespace AEcalle\Oc\Php\Project5\Router;
 
-use AEcalle\Oc\Php\Project5\Router\Router;
-
 final class Route
 {
     private string $path;
@@ -44,7 +42,7 @@ final class Route
         
         $regex = "#^$path$#i";
     
-        if (!preg_match($regex, $url, $matches))
+        if (! preg_match($regex, $url, $matches))
         {
             return false;
         }

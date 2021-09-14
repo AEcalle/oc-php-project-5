@@ -27,7 +27,6 @@ final class Form
     public function handleRequest(Request $request)
     {         
         $this->request = $request;
-
         $data = $request->request->all(); 
       
         unset($data[$this->name.'_token']);
@@ -43,10 +42,8 @@ final class Form
             catch(AssertionFailedException $e)
             {
                 $this->constraintViolation[] = $e->getMessage();
-            }
-                       
+            }                       
         }
-
         return $this->entity;
     }
 

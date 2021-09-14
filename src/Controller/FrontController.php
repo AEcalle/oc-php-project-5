@@ -12,7 +12,7 @@ use AEcalle\Oc\Php\Project5\Repository\CommentRepository;
 use AEcalle\Oc\Php\Project5\Repository\PostRepository;
 use AEcalle\Oc\Php\Project5\Repository\UserRepository;
 
-class FrontController extends AbstractController
+final class FrontController extends AbstractController
 {
     public function home(): Response
     {       

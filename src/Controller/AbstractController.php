@@ -65,8 +65,7 @@ abstract class AbstractController
             $this->session->getFlashBag()->add('warning','Message: ' .$e->getMessage()); 
             
             return false;
-        } 
-       
+        }       
     }
     
 }

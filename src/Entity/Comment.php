@@ -4,7 +4,7 @@ namespace AEcalle\Oc\Php\Project5\Entity;
 
 use Assert\Assertion;
 
-class Comment
+final class Comment
 {
     private int $id;
     private string $content;

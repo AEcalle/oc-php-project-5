@@ -19,7 +19,11 @@ $router->get('/post/:id-:slug','FrontController#post','post')->width('id','[0-9]
 $router->post('/post/:id-:slug','FrontController#post','post')->width('id','[0-9]+')->width('slug','[0-9a-z\-]+');
 $router->get('/login','FrontController#login','login');
 $router->post('/login','FrontController#login','login');
-$router->get('/legal',function(){echo 'Mentions légales';});
+$router->get('/legal',function()
+{
+    echo 'Mentions légales';
+}
+);
 $router->get('/createPost','BackController#createPost','createPost');
 
 $router->run();

@@ -26,15 +26,14 @@ abstract class AbstractRepository
         $this->class = $namespace . $className;
     }
 
-    public function find(int $id): Object
+    public function find(int $id): object
     {
-        $q = self::$db->prepare("SELECT * FROM  $this->table WHERE id = :id");
+        $q = self::$db->prepare("SELECT * FROM  {$this->table} WHERE id = :id");
         $q->execute([
             ':id' => $id
-        ]);
-        $entity = $this->createEntity($q->fetch(\PDO::FETCH_ASSOC));
+        ]);        
 
-        return $entity;
+        return $this->createEntity($q->fetch(\PDO::FETCH_ASSOC));
     }
 
     /**
@@ -43,7 +42,7 @@ abstract class AbstractRepository
 
     public function findAll(): array
     {
-        $q = self::$db->prepare("SELECT * FROM $this->table");
+        $q = self::$db->prepare("SELECT * FROM {$this->table}");
         $q->execute();
         $entities = [];
         while ($data = $q->fetch(\PDO::FETCH_ASSOC)) {
@@ -56,7 +55,7 @@ abstract class AbstractRepository
     }
 
     /**
-     * @return Object[]
+     * @return object[]
      */
 
     public function findBy(array $criteria, array $orderBy, int $offset, int $nbRows): array
@@ -65,7 +64,7 @@ abstract class AbstractRepository
 
         $whereClause = "";
         
-        if (!empty($criteria))
+        if ($criteria)
         {
             $whereClause = "WHERE ";
             foreach($criteria as $k=>$v)
@@ -82,7 +81,7 @@ abstract class AbstractRepository
         } 
         
         $orderClause = "";
-        if (!empty($orderBy))
+        if ($orderBy)
         {
             $orderClause = "ORDER BY ";
             foreach ($orderBy as $k=>$v)
@@ -95,12 +94,12 @@ abstract class AbstractRepository
             }
         }       
         
-        $q = self::$db->prepare("SELECT * FROM $this->table $whereClause $orderClause LIMIT :offset,:nbRows");
-        $q->bindValue(':offset',$offset,\PDO::PARAM_INT);  
-        $q->bindValue(':nbRows',$nbRows,\PDO::PARAM_INT);
+        $q = self::$db->prepare("SELECT * FROM {$this->table} $whereClause $orderClause LIMIT :offset,:nbRows");
+        $q->bindValue(':offset', $offset, \PDO::PARAM_INT);  
+        $q->bindValue(':nbRows', $nbRows, \PDO::PARAM_INT);
         foreach($parameters as $k=>$v)
         {          
-            $q->bindValue($k,$v);
+            $q->bindValue($k, $v);
         }      
         $q->execute();
 
@@ -114,11 +113,11 @@ abstract class AbstractRepository
         return $entities;
     } 
     
-    public function findOneBy(array $criteria): ?Object
+    public function findOneBy(array $criteria): ?object
     {
-        $entities = $this->findBy($criteria,[],0,1);
+        $entities = $this->findBy($criteria, [], 0, 1);
         
-        if (empty($entities))
+        if (! $entities)
         {
             return null;
         }
@@ -126,7 +125,7 @@ abstract class AbstractRepository
         return $entities[0];
     }
 
-    protected function createEntity(array $data): Object
+    protected function createEntity(array $data): object
     {        
         $entity = new $this->class();
         foreach ($data as $k => $v) {
@@ -145,7 +144,7 @@ abstract class AbstractRepository
 
     public function delete($id): void
     {        
-        $q = self::$db->prepare("DELETE FROM $this->table WHERE id = :id");
+        $q = self::$db->prepare("DELETE FROM {$this->table} WHERE id = :id");
         $q->execute([
             ':id' => $id
         ]);
@@ -153,7 +152,7 @@ abstract class AbstractRepository
 
     public function count(): int
     {
-        $q = self::$db->prepare("SELECT COUNT(id) FROM $this->table");
+        $q = self::$db->prepare("SELECT COUNT(id) FROM {$this->table}");
         $q->execute();        
         $data = $q->fetch(\PDO::FETCH_ASSOC);
 
