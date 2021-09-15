@@ -32,10 +32,11 @@ $router->get('/posts','BackController#posts','posts');
 $router->get('/users','BackController#users','users');
 $router->get('/comments','BackController#comments','comments');
 $router->post('/comments','BackController#comments','comments');
-$router->get('/updatePost','BackController#updatePost','updatePost');
+$router->get('/updatePost/:id','BackController#updatePost','updatePost')->width('id','[0-9]+');
 $router->get('/updateUser','BackController#updateUser','updateUser');
-$router->post('/updatePost','BackController#updatePost','updatePost');
+$router->post('/updatePost/:id','BackController#updatePost','updatePost')->width('id','[0-9]+');
 $router->post('/updateUser','BackController#updateUser','updateUser');
+$router->get('/deletePost/:id/:token','BackController#deletePost','deletePost')->width('id','[0-9]+')->width('token','[a-zA-Z0-9.]+');
 
 
 $router->run();

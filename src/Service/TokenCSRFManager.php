@@ -14,8 +14,7 @@ final class TokenCSRFManager
         if ($session->get($name.'_token')===null)
         {           
             $token = uniqid(rand(), true);
-            $session->set($name.'_token', $token);
-            $session->set($name.'_token_time', time());            
+            $session->set($name.'_token', $token);                       
         }
         else
         {
@@ -28,11 +27,14 @@ final class TokenCSRFManager
     public function verifToken(string $name, Request $request): bool
     {
         $session = new Session();
-      
-        if ($session->get($name.'_token')!==null && $session->get($name.'_token_time')!==null && $request->request->get($name.'_token')!==null)            
-            if ($session->get($name.'_token')===$request->request->get($name.'_token'))                
-               if ($request->getUri()===$request->server->get('HTTP_REFERER'))
+    
+        if ($session->get($name.'_token') !== null && $request->request->get($name.'_token') !== null){            
+            if ($session->get($name.'_token') === $request->request->get($name.'_token')){                      
+                if (preg_match('#'.$_ENV["URL_SITE"].'#', $request->server->get('HTTP_REFERER'))){                    
                     return true;
+                }
+            }
+        }
         return false;
     }
 }
