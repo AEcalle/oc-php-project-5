@@ -2,6 +2,8 @@
 
 namespace AEcalle\Oc\Php\Project5\Entity;
 
+use Assert\Assertion;
+
 final class Post
 {
     private int $id;
@@ -11,6 +13,7 @@ final class Post
     private string $content;
     private \DateTime $createdAt;
     private \DateTime $updatedAt;
+    private string $author;
     private int $userId;
 
     public function getId(): int
@@ -33,6 +36,8 @@ final class Post
     public function setTitle(string $title): self
     {
         $this->title = $title;
+
+        Assertion::notEmpty($title,"Le champ titre doit être renseigné.");
 
         return $this;
     }
@@ -58,6 +63,8 @@ final class Post
     {
         $this->standfirst = $standfirst;
 
+        Assertion::notEmpty($standfirst,"Le champ chapô doit être renseigné.");
+
         return $this;
     }
 
@@ -69,6 +76,8 @@ final class Post
     public function setContent(string $content): self
     {
         $this->content = $content;
+
+        Assertion::notEmpty($content,"Le champ contenu doit être renseigné.");
 
         return $this;
     }
@@ -97,6 +106,19 @@ final class Post
         return $this;
     }
 
+    public function getAuthor(): string
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(string $author): self
+    {
+
+        $this->author = $author;
+
+        return $this;
+    }
+
     public function getUserId(): int
     {
         return $this->userId;
@@ -108,4 +130,6 @@ final class Post
 
         return $this;
     } 
+
+    
 }
