@@ -41,4 +41,12 @@ final class BackController extends AbstractController
             ]
         );
     }
+
+    public function posts(): Response
+    {
+        $postRepository = new PostRepository();
+        $posts = $postRepository->findAll();
+        
+        return $this->render('back/posts.html.twig',['posts'=>$posts]);
+    }
 }
