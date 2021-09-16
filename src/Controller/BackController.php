@@ -190,4 +190,23 @@ final class BackController extends AbstractController
             ]
         );
     }
+
+    public function deleteUser(int $id, string $token): RedirectResponse
+    {
+        if (! $this->checkAuth('admin')) {
+            return $this->redirect('login');
+        }
+        
+        $tokenCSRFManager = new TokenCSRFManager();
+        $this->request->request->set('User_token',$token);
+        
+        if ($tokenCSRFManager->verifToken('User', $this->request)){
+            
+            $this->userRepository->delete($id);
+            $this->session->getFlashBag()->add('success','Utilisateur supprimé !');
+        }
+
+        
+        return $this->redirect('users');
+    }
 }

@@ -38,7 +38,7 @@
                 </div>
                 <button class="btn btn-primary my-5 text-uppercase" id="submitButton" type="submit">Envoyer</button>
             </form>
-            <button class="btn btn-danger my-5 text-uppercase" id="submitButton" type="submit">Supprimer</button>
+            <a href="/deleteUser/{{ user.id }}/{{ form.token }}" class="text-danger my-5 text-uppercase" onclick="return window.confirm('Êtes vous sur de vouloir supprimer..')">Supprimer</a>
         </div>
     </div>
 </div>
