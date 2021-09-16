@@ -23,6 +23,7 @@
         "cocur/slugify": "^4.0"
     },
     "require-dev": {
-        "nunomaduro/phpinsights": "^2.0"
+        "nunomaduro/phpinsights": "^2.0",
+        "friendsoftwig/twigcs": "^5.0"
     }
 }
