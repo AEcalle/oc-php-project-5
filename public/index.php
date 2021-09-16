@@ -25,9 +25,9 @@ $router->get('/legal',function()
 }
 );
 $router->get('/createPost','BackController#createPost','createPost');
-$router->get('/createUser','BackController#createUser','createUser');
+$router->get('/createUser','FrontController#createUser','createUser');
 $router->post('/createPost','BackController#createPost','createPost');
-$router->post('/createUser','BackController#createUser','createUser');
+$router->post('/createUser','FrontController#createUser','createUser');
 $router->get('/posts','BackController#posts','posts');
 $router->get('/users','BackController#users','users');
 $router->get('/comments','BackController#comments','comments');

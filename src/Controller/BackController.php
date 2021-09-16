@@ -3,6 +3,7 @@
 namespace AEcalle\Oc\Php\Project5\Controller;
 
 use AEcalle\Oc\Php\Project5\Entity\Post;
+use AEcalle\Oc\Php\Project5\Entity\User;
 use AEcalle\Oc\Php\Project5\Form\Form;
 use AEcalle\Oc\Php\Project5\Repository\CommentRepository;
 use AEcalle\Oc\Php\Project5\Repository\PostRepository;
@@ -145,7 +146,7 @@ final class BackController extends AbstractController
         
         $this->session->getFlashBag()->add('success','Commentaire mis à jour !');
         return $this->redirect('comments');
-    }
+    }    
 
     public function users(): Response
     {

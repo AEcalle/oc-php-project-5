@@ -122,5 +122,28 @@ final class FrontController extends AbstractController
 
         return $this->render('front/login.html.twig',['form'=>$form]);
     }
+
+    public function createUser(): Response
+    {
+        $form = new Form(new User(),'User');
+
+        $user = $form->handleRequest($this->request);
+        
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user->setCreatedAt(new \DateTime());
+            $user->setRole('unauthorised');
+            $user->setPassword(password_hash($user->getPassword(),PASSWORD_DEFAULT));
+            $this->userRepository->add($user);
+
+            $this->session->getFlashBag()->add('success','Inscription enregistrée !');  
+            return $this->redirect('createUser');
+        }
+
+        return $this->render('front/createUser.html.twig',            
+            [
+                'form' => $form,                
+            ]
+        );
+    }
     
 }

@@ -20,7 +20,7 @@ abstract class AbstractController
     protected Session $session;
     protected Authentication $authentification;
     protected UserRepository $userRepository;
-    protected User $user;
+    protected ?User $user =null;
 
     public function __construct(Router $router)
     {
@@ -43,7 +43,9 @@ abstract class AbstractController
         $loader = new FilesystemLoader('../templates');
         $twig = new Environment($loader);
         $twig->addGlobal('session', $this->session);
-        $twig->addGlobal('userConnected', $this->user);
+        if (isset($this->user)){
+            $twig->addGlobal('userConnected', $this->user);
+        }            
 
         return new Response($twig->render($view, $context));
     }
