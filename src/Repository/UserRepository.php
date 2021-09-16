@@ -10,12 +10,13 @@ final class UserRepository extends AbstractRepository
 
     public function add(User $user): User 
     {
-        $q = parent::$db->prepare("INSERT INTO {$this->table}(email,password,created_at) 
-        VALUES(:email,:password,:created_at)");
+        $q = parent::$db->prepare("INSERT INTO {$this->table}(email,password,created_at,role) 
+        VALUES(:email,:password,:created_at,:role)");
         $q->execute([           
             ':email' => $user->getEmail(),
             ':password' => $user->getPassword(),
-            ':created_at' => $user->getCreatedAt()->format('Y-m-d H:i:s'),      
+            ':created_at' => $user->getCreatedAt()->format('Y-m-d H:i:s'),
+            ':role' => $user->getRole(),     
         ]);        
 
         return $this->find(parent::$db->lastInsertId());
@@ -23,12 +24,13 @@ final class UserRepository extends AbstractRepository
 
     public function update(User $user): User 
     {
-        $q = parent::$db->prepare("UPDATE {$this->table} SET email = :email, password = :password, created_at = :created_at WHERE id = :id");
+        $q = parent::$db->prepare("UPDATE {$this->table} SET email = :email, password = :password, created_at = :created_at, role = :role WHERE id = :id");
         $q->execute([
             ':id' => $user->getId(),      
             ':email' => $user->getEmail(),
             ':password' => $user->getPassword(),
             ':created_at' => $user->getCreatedAt()->format('Y-m-d H:i:s'),
+            ':role' => $user->getRole(),
         ]);        
 
         return $this->find($user->getId());

@@ -9,7 +9,8 @@ final class User
     private int $id;
     private string $email;
     private string $password;
-    private \DateTime $createdAt;    
+    private \DateTime $createdAt;
+    private string $role;    
 
     public function getId(): int
     {
@@ -60,6 +61,18 @@ final class User
     public function setCreatedAt(\DateTime $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+    
+    public function getRole(): string
+    {
+        return $this->role;
+    }
+
+    public function setRole(string $role): self
+    {
+        $this->role = $role;
 
         return $this;
     }

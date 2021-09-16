@@ -12,7 +12,7 @@ use Cocur\Slugify\Slugify;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 final class BackController extends AbstractController
-{
+{  
     public function createPost(): Response
     {
         if (! $this->checkAuth()) {
@@ -52,7 +52,7 @@ final class BackController extends AbstractController
         }
         
         $postRepository = new PostRepository();
-        $posts = $postRepository->findAll();
+        $posts = $postRepository->findBy(['user_id' => $this->user->getId()], [], 0, 50);
         
         return $this->render('back/posts.html.twig',
             [
@@ -145,5 +145,48 @@ final class BackController extends AbstractController
         
         $this->session->getFlashBag()->add('success','Commentaire mis à jour !');
         return $this->redirect('comments');
+    }
+
+    public function users(): Response
+    {
+        if (! $this->checkAuth("admin")) {
+            return $this->redirect('login');
+        }
+      
+        $users = $this->userRepository->findAll();
+
+        return $this->render('back/users.html.twig',
+            [           
+                'users'=>$users,
+            ]
+        ); 
+    }
+
+    public function updateUser($id): Response
+    {   
+        if (! $this->checkAuth("admin")) {
+            return $this->redirect('login');
+        }        
+       
+        $user = $this->userRepository->find($id);
+
+        $form = new Form($user,'User');
+
+        $user = $form->handleRequest($this->request);
+        
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->userRepository->update($user);
+
+            $this->session->getFlashBag()->add('success','Utilisateur modifié !');  
+            return $this->redirect('users');
+        }
+
+
+        return $this->render('back/updateUser.html.twig',            
+            [
+                'form' => $form,
+                'user' => $user,
+            ]
+        );
     }
 }

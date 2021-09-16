@@ -2,6 +2,8 @@
 
 namespace AEcalle\Oc\Php\Project5\Controller;
 
+use AEcalle\Oc\Php\Project5\Entity\User;
+use AEcalle\Oc\Php\Project5\Repository\UserRepository;
 use AEcalle\Oc\Php\Project5\Router\Router;
 use AEcalle\Oc\Php\Project5\Service\Authentication;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -17,6 +19,8 @@ abstract class AbstractController
     protected Request $request;
     protected Session $session;
     protected Authentication $authentification;
+    protected UserRepository $userRepository;
+    protected User $user;
 
     public function __construct(Router $router)
     {
@@ -24,6 +28,10 @@ abstract class AbstractController
         $this->request = $this->router->getRequest();
         $this->session = new Session();
         $this->authentification = new Authentication();
+        $this->userRepository = new UserRepository();
+        if ($this->session->get('userId')){
+            $this->user = $this->userRepository->find($this->session->get('userId'));
+        }
     }
 
     /**
@@ -35,6 +43,7 @@ abstract class AbstractController
         $loader = new FilesystemLoader('../templates');
         $twig = new Environment($loader);
         $twig->addGlobal('session', $this->session);
+        $twig->addGlobal('userConnected', $this->user);
 
         return new Response($twig->render($view, $context));
     }
@@ -49,15 +58,18 @@ abstract class AbstractController
         return new RedirectResponse($path);
     }
 
-    public function checkAuth(): bool
+    public function checkAuth(string $roleRequired = "author"): bool
     {
         try
         {
-            if (!$this->authentification->check($this->session))
-            {                      
+            if (!$this->authentification->check($this->session)) {                      
                 throw new ControllerException("Acces Denied");
             }
-            
+                        
+            if ($this->user->getRole() === "unauthorised" || ($roleRequired === "admin" && $this->user->getRole() === "author")){
+                throw new ControllerException("Acces Denied");
+            }
+
             return true;
         }
         catch (ControllerException $e)

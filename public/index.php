@@ -33,9 +33,9 @@ $router->get('/users','BackController#users','users');
 $router->get('/comments','BackController#comments','comments');
 $router->post('/comments','BackController#comments','comments');
 $router->get('/updatePost/:id','BackController#updatePost','updatePost')->width('id','[0-9]+');
-$router->get('/updateUser','BackController#updateUser','updateUser');
+$router->get('/updateUser/:id','BackController#updateUser','updateUser')->width('id','[0-9]+');
 $router->post('/updatePost/:id','BackController#updatePost','updatePost')->width('id','[0-9]+');
-$router->post('/updateUser','BackController#updateUser','updateUser');
+$router->post('/updateUser/:id','BackController#updateUser','updateUser')->width('id','[0-9]+');
 $router->get('/deletePost/:id/:token','BackController#deletePost','deletePost')->width('id','[0-9]+')->width('token','[a-zA-Z0-9.]+');
 $router->get('/publishComment/:id/:published','BackController#publishComment','publishComment')->width('id','[0-9]+')->width('published','[0-9]+');
 
