@@ -37,6 +37,7 @@ $router->get('/updateUser','BackController#updateUser','updateUser');
 $router->post('/updatePost/:id','BackController#updatePost','updatePost')->width('id','[0-9]+');
 $router->post('/updateUser','BackController#updateUser','updateUser');
 $router->get('/deletePost/:id/:token','BackController#deletePost','deletePost')->width('id','[0-9]+')->width('token','[a-zA-Z0-9.]+');
+$router->get('/publishComment/:id/:published','BackController#publishComment','publishComment')->width('id','[0-9]+')->width('published','[0-9]+');
 
 
 $router->run();

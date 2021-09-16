@@ -4,6 +4,7 @@ namespace AEcalle\Oc\Php\Project5\Controller;
 
 use AEcalle\Oc\Php\Project5\Entity\Post;
 use AEcalle\Oc\Php\Project5\Form\Form;
+use AEcalle\Oc\Php\Project5\Repository\CommentRepository;
 use AEcalle\Oc\Php\Project5\Repository\PostRepository;
 use AEcalle\Oc\Php\Project5\Service\TokenCSRFManager;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,7 +15,7 @@ final class BackController extends AbstractController
 {
     public function createPost(): Response
     {
-        if (!$this->checkAuth()) {
+        if (! $this->checkAuth()) {
             return $this->redirect('login');
         }
 
@@ -46,19 +47,23 @@ final class BackController extends AbstractController
 
     public function posts(): Response
     {
-        if (!$this->checkAuth()) {
+        if (! $this->checkAuth()) {
             return $this->redirect('login');
         }
         
         $postRepository = new PostRepository();
         $posts = $postRepository->findAll();
         
-        return $this->render('back/posts.html.twig',['posts'=>$posts]);
+        return $this->render('back/posts.html.twig',
+            [
+                'posts' => $posts
+            ]
+        );
     }
 
-    public function updatePost($id): Response
+    public function updatePost(int $id): Response
     {
-        if (!$this->checkAuth()) {
+        if (! $this->checkAuth()) {
             return $this->redirect('login');
         }
  
@@ -77,17 +82,27 @@ final class BackController extends AbstractController
             $post = $postRepository->update($post);
             
             $this->session->getFlashBag()->add('success','Post modifié !');   
-            return $this->redirect('updatePost',['id'=>$id]);
+            return $this->redirect('updatePost',
+                [
+                    'id' => $id
+                ]
+            );
         }        
 
-        return $this->render('back/updatePost.html.twig',[
-            'form'=>$form,
-            'post'=>$post,
-        ]);
+        return $this->render('back/updatePost.html.twig',
+            [
+                'form' => $form,
+                'post' => $post,
+            ]
+        );
     }
 
-    public function deletePost($id,$token): RedirectResponse
+    public function deletePost(int $id, string $token): RedirectResponse
     {
+        if (! $this->checkAuth()) {
+            return $this->redirect('login');
+        }
+        
         $tokenCSRFManager = new TokenCSRFManager();
         $this->request->request->set('Post_token',$token);
         
@@ -99,5 +114,36 @@ final class BackController extends AbstractController
 
         
         return $this->redirect('posts');
+    }
+
+    public function comments(): Response
+    {
+        if (! $this->checkAuth()) {
+            return $this->redirect('login');
+        }
+
+        $commentRepository = new CommentRepository();
+        $comments = $commentRepository->findAll();
+     
+        return $this->render('back/comments.html.twig',
+            [           
+                'comments'=>$comments,
+            ]
+        );
+    }
+
+    public function publishComment(int $id, bool $publish): RedirectResponse
+    {
+        if (! $this->checkAuth()) {
+            return $this->redirect('login');
+        }
+        
+        $commentRepository = new CommentRepository();
+        $comment = $commentRepository->find($id);
+        $comment->setPublished($publish);
+        $commentRepository->update($comment);
+        
+        $this->session->getFlashBag()->add('success','Commentaire mis à jour !');
+        return $this->redirect('comments');
     }
 }
