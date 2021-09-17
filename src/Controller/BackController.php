@@ -3,29 +3,24 @@
 namespace AEcalle\Oc\Php\Project5\Controller;
 
 use AEcalle\Oc\Php\Project5\Entity\Post;
-use AEcalle\Oc\Php\Project5\Entity\User;
 use AEcalle\Oc\Php\Project5\Form\Form;
-use AEcalle\Oc\Php\Project5\Repository\CommentRepository;
-use AEcalle\Oc\Php\Project5\Repository\PostRepository;
 use AEcalle\Oc\Php\Project5\Service\TokenCSRFManager;
 use Symfony\Component\HttpFoundation\Response;
 use Cocur\Slugify\Slugify;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 final class BackController extends AbstractController
-{  
+{
     public function createPost(): Response
     {
         if (! $this->checkAuth()) {
             return $this->redirect('login');
         }
 
-        $postRepository = new PostRepository();
-
         $form = new Form(new Post(),'Post');
 
         $post = $form->handleRequest($this->request);
-        
+
         if ($form->isSubmitted() && $form->isValid()) {
             $slugify = new Slugify();
             $post->setSlug($slugify->slugify($post->getTitle()));
@@ -33,9 +28,9 @@ final class BackController extends AbstractController
             $post->setUpdatedAt(new \DateTime());
             $post->setUserId($this->session->get('userId'));
 
-            $postRepository->add($post);
-            
-            $this->session->getFlashBag()->add('success','Post ajouté !');   
+            $this->postRepository->add($post);
+
+            $this->session->getFlashBag()->add('success','Post ajouté !');
             return $this->redirect('createPost');
         }
 
@@ -51,9 +46,8 @@ final class BackController extends AbstractController
         if (! $this->checkAuth()) {
             return $this->redirect('login');
         }
-        
-        $postRepository = new PostRepository();
-        $posts = $postRepository->findBy(['user_id' => $this->user->getId()], [], 0, 50);
+
+        $posts = $this->postRepository->findBy(['user_id' => $this->user->getId()], [], 0, 50);
         
         return $this->render('back/posts.html.twig',
             [
@@ -67,28 +61,27 @@ final class BackController extends AbstractController
         if (! $this->checkAuth()) {
             return $this->redirect('login');
         }
- 
-        $postRepository = new PostRepository();
-        $post = $postRepository->find($id);
+
+        $post = $this->postRepository->find($id);
         $form = new Form($post,'Post');
 
         $post = $form->handleRequest($this->request);
-        
+
         if ($form->isSubmitted() && $form->isValid()) {
             
             $slugify = new Slugify();
-            $post->setSlug($slugify->slugify($post->getTitle()));           
-            $post->setUpdatedAt(new \DateTime());         
+            $post->setSlug($slugify->slugify($post->getTitle()));
+            $post->setUpdatedAt(new \DateTime());
 
-            $post = $postRepository->update($post);
+            $post = $this->postRepository->update($post);
             
-            $this->session->getFlashBag()->add('success','Post modifié !');   
+            $this->session->getFlashBag()->add('success','Post modifié !');
             return $this->redirect('updatePost',
                 [
                     'id' => $id
                 ]
             );
-        }        
+        }
 
         return $this->render('back/updatePost.html.twig',
             [
@@ -103,17 +96,15 @@ final class BackController extends AbstractController
         if (! $this->checkAuth()) {
             return $this->redirect('login');
         }
-        
+
         $tokenCSRFManager = new TokenCSRFManager();
         $this->request->request->set('Post_token',$token);
         
         if ($tokenCSRFManager->verifToken('Post', $this->request)){
-            $postRepository = new PostRepository();
-            $postRepository->delete($id);
+            $this->postRepository->delete($id);
             $this->session->getFlashBag()->add('success','Post supprimé !');
         }
 
-        
         return $this->redirect('posts');
     }
 
@@ -123,9 +114,8 @@ final class BackController extends AbstractController
             return $this->redirect('login');
         }
 
-        $commentRepository = new CommentRepository();
-        $comments = $commentRepository->findAll();
-     
+        $comments = $this->commentRepository->findAll();
+
         return $this->render('back/comments.html.twig',
             [           
                 'comments'=>$comments,
@@ -137,38 +127,37 @@ final class BackController extends AbstractController
     {
         if (! $this->checkAuth()) {
             return $this->redirect('login');
-        }
-        
-        $commentRepository = new CommentRepository();
-        $comment = $commentRepository->find($id);
+        }      
+
+        $comment = $this->commentRepository->find($id);
         $comment->setPublished($publish);
-        $commentRepository->update($comment);
-        
+        $this->commentRepository->update($comment);
+
         $this->session->getFlashBag()->add('success','Commentaire mis à jour !');
         return $this->redirect('comments');
-    }    
+    }
 
     public function users(): Response
     {
         if (! $this->checkAuth("admin")) {
             return $this->redirect('login');
         }
-      
+
         $users = $this->userRepository->findAll();
 
         return $this->render('back/users.html.twig',
-            [           
+            [
                 'users'=>$users,
             ]
         ); 
     }
 
-    public function updateUser($id): Response
+    public function updateUser(int $id): Response
     {   
         if (! $this->checkAuth("admin")) {
             return $this->redirect('login');
         }        
-       
+
         $user = $this->userRepository->find($id);
 
         $form = new Form($user,'User');
@@ -178,12 +167,11 @@ final class BackController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->userRepository->update($user);
 
-            $this->session->getFlashBag()->add('success','Utilisateur modifié !');  
+            $this->session->getFlashBag()->add('success','Utilisateur modifié !');
             return $this->redirect('users');
         }
 
-
-        return $this->render('back/updateUser.html.twig',            
+        return $this->render('back/updateUser.html.twig',
             [
                 'form' => $form,
                 'user' => $user,
@@ -196,17 +184,15 @@ final class BackController extends AbstractController
         if (! $this->checkAuth('admin')) {
             return $this->redirect('login');
         }
-        
+
         $tokenCSRFManager = new TokenCSRFManager();
         $this->request->request->set('User_token',$token);
-        
+
         if ($tokenCSRFManager->verifToken('User', $this->request)){
-            
             $this->userRepository->delete($id);
             $this->session->getFlashBag()->add('success','Utilisateur supprimé !');
         }
 
-        
         return $this->redirect('users');
     }
 }

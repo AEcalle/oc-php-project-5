@@ -3,6 +3,8 @@
 namespace AEcalle\Oc\Php\Project5\Controller;
 
 use AEcalle\Oc\Php\Project5\Entity\User;
+use AEcalle\Oc\Php\Project5\Repository\CommentRepository;
+use AEcalle\Oc\Php\Project5\Repository\PostRepository;
 use AEcalle\Oc\Php\Project5\Repository\UserRepository;
 use AEcalle\Oc\Php\Project5\Router\Router;
 use AEcalle\Oc\Php\Project5\Service\Authentication;
@@ -21,6 +23,8 @@ abstract class AbstractController
     protected Authentication $authentification;
     protected UserRepository $userRepository;
     protected ?User $user =null;
+    protected PostRepository $postRepository;
+    protected CommentRepository $commentRepository;
 
     public function __construct(Router $router)
     {
@@ -32,10 +36,13 @@ abstract class AbstractController
         if ($this->session->get('userId')){
             $this->user = $this->userRepository->find($this->session->get('userId'));
         }
+        $this->postRepository = new PostRepository();
+        $this->commentRepository = new CommentRepository();        
+
     }
 
     /**
-     * @param mixed[] $context
+     * @param <string, mixed> $context
      */
 
     public function render(string $view, array $context = []): Response
@@ -51,7 +58,7 @@ abstract class AbstractController
     }
 
     /**
-     * @param string[] $context
+     * @param <string, mixed> $context
      */
 
     public function redirect(string $route, array $context = []): RedirectResponse
