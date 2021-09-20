@@ -20,9 +20,9 @@ abstract class AbstractController
     private Router $router;
     protected Request $request;
     protected Session $session;
-    protected Authentication $authentification;
+    protected Authentication $authorization;
     protected UserRepository $userRepository;
-    protected ?User $user =null;
+    protected ?User $user = null;
     protected PostRepository $postRepository;
     protected CommentRepository $commentRepository;
 
@@ -31,14 +31,11 @@ abstract class AbstractController
         $this->router = $router;
         $this->request = $this->router->getRequest();
         $this->session = new Session();
-        $this->authentification = new Authentication();
+        $this->authorization = new Authentication();
         $this->userRepository = new UserRepository();
-        if ($this->session->get('userId')){
-            $this->user = $this->userRepository->find($this->session->get('userId'));
-        }
         $this->postRepository = new PostRepository();
-        $this->commentRepository = new CommentRepository();        
-
+        $this->commentRepository = new CommentRepository();
+        $this->user = $this->getUser();
     }
 
     /**
@@ -68,12 +65,30 @@ abstract class AbstractController
     }
 
     public function checkAuth(string $roleRequired = "author")
-    {
-        if (! $this->authentification->check($this->session) || $this->user->getRole() === "unauthorised" 
-        || ($roleRequired === "admin" && $this->user->getRole() === "author")){
+    {        
+        if (null === $this->user){
+            $this->session->getFlashBag()->add('warning','Access Denied');
+            throw new AccessDeniedException();
+        }
+
+        if ($this->user->getRole() === "unauthorised" || ($roleRequired === "admin" && $this->user->getRole() === "author")){
             $this->session->getFlashBag()->add('warning','Access Denied');
             throw new AccessDeniedException();
         }
     }
+
+    public function getUser(): ?User
+    {
+        if (! $this->authorization->check($this->session)){
+            return null;
+        }
+        
+        if (null === $this->user) {
+            $this->user = $this->userRepository->find($this->session->get('userId'));
+        }
+        
+        return $this->user;
+    }
+
     
 }
