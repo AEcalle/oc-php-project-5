@@ -13,9 +13,7 @@ final class BackController extends AbstractController
 {
     public function createPost(): Response
     {
-        if (! $this->checkAuth()) {
-            return $this->redirect('login');
-        }
+        $this->checkAuth();
 
         $form = new Form(new Post(),'Post');
 
@@ -43,9 +41,7 @@ final class BackController extends AbstractController
 
     public function posts(): Response
     {
-        if (! $this->checkAuth()) {
-            return $this->redirect('login');
-        }
+        $this->checkAuth();
 
         $posts = $this->postRepository->findBy(['user_id' => $this->user->getId()], [], 0, 50);
         
@@ -58,9 +54,7 @@ final class BackController extends AbstractController
 
     public function updatePost(int $id): Response
     {
-        if (! $this->checkAuth()) {
-            return $this->redirect('login');
-        }
+        $this->checkAuth();
 
         $post = $this->postRepository->find($id);
         $form = new Form($post,'Post');
@@ -93,9 +87,7 @@ final class BackController extends AbstractController
 
     public function deletePost(int $id, string $token): RedirectResponse
     {
-        if (! $this->checkAuth()) {
-            return $this->redirect('login');
-        }
+        $this->checkAuth();
 
         $tokenCSRFManager = new TokenCSRFManager();
         $this->request->request->set('Post_token',$token);
@@ -110,9 +102,7 @@ final class BackController extends AbstractController
 
     public function comments(): Response
     {
-        if (! $this->checkAuth()) {
-            return $this->redirect('login');
-        }
+        $this->checkAuth();
 
         $comments = $this->commentRepository->findAll();
 
@@ -125,9 +115,7 @@ final class BackController extends AbstractController
 
     public function publishComment(int $id, bool $publish): RedirectResponse
     {
-        if (! $this->checkAuth()) {
-            return $this->redirect('login');
-        }      
+        $this->checkAuth();     
 
         $comment = $this->commentRepository->find($id);
         $comment->setPublished($publish);
@@ -139,9 +127,7 @@ final class BackController extends AbstractController
 
     public function users(): Response
     {
-        if (! $this->checkAuth("admin")) {
-            return $this->redirect('login');
-        }
+        $this->checkAuth('admin');
 
         $users = $this->userRepository->findAll();
 
@@ -154,9 +140,7 @@ final class BackController extends AbstractController
 
     public function updateUser(int $id): Response
     {   
-        if (! $this->checkAuth("admin")) {
-            return $this->redirect('login');
-        }        
+        $this->checkAuth('admin');        
 
         $user = $this->userRepository->find($id);
 
@@ -181,9 +165,7 @@ final class BackController extends AbstractController
 
     public function deleteUser(int $id, string $token): RedirectResponse
     {
-        if (! $this->checkAuth('admin')) {
-            return $this->redirect('login');
-        }
+        $this->checkAuth('admin');
 
         $tokenCSRFManager = new TokenCSRFManager();
         $this->request->request->set('User_token',$token);

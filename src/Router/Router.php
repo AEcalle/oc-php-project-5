@@ -67,7 +67,15 @@ final class Router
 
         foreach ($this->routes[$this->request->getMethod()] as $route) {
             if ($route->match($this->request->getPathInfo())) {
-                return $route->call($this);
+                
+                try{
+                    return $route->call($this);
+                }
+                catch(\Exception $e){
+                    $route = new Route('/login', 'FrontController#login');                    
+                    return $route->call($this);
+                }
+                
             }
         }
 

@@ -67,26 +67,13 @@ abstract class AbstractController
         return new RedirectResponse($path);
     }
 
-    public function checkAuth(string $roleRequired = "author"): bool
+    public function checkAuth(string $roleRequired = "author")
     {
-        try
-        {
-            if (!$this->authentification->check($this->session)) {                      
-                throw new ControllerException("Acces Denied");
-            }
-                        
-            if ($this->user->getRole() === "unauthorised" || ($roleRequired === "admin" && $this->user->getRole() === "author")){
-                throw new ControllerException("Acces Denied");
-            }
-
-            return true;
+        if (! $this->authentification->check($this->session) || $this->user->getRole() === "unauthorised" 
+        || ($roleRequired === "admin" && $this->user->getRole() === "author")){
+            $this->session->getFlashBag()->add('warning','Access Denied');
+            throw new AccessDeniedException();
         }
-        catch (ControllerException $e)
-        {
-            $this->session->getFlashBag()->add('warning','Message: ' .$e->getMessage()); 
-            
-            return false;
-        }       
     }
     
 }
