@@ -87,7 +87,7 @@ final class FrontController extends AbstractController
         {
             $userInDb = $this->userRepository->findOneBy(['email' => $user->getEmail()]);
 
-            if (!isset($userInDb))
+            if (null === $userInDb)
             {
                 $this->session->getFlashBag()->add('warning', 'Adresse email inconnue');   
                 return $this->redirect('login'); 
@@ -104,7 +104,13 @@ final class FrontController extends AbstractController
             $this->session->set('userId', $userInDb->getId());
             
             return $this->redirect('createPost');
+        }else if($form->isSubmitted()){
 
+            foreach ($form->getConstraintViolation() as $violation){
+                $this->session->getFlashBag()->add('warning', $violation);
+            }
+
+            return $this->redirect('login');
         }
 
         return $this->render('front/login.html.twig',['form' => $form]);
