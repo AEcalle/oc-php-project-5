@@ -2,14 +2,14 @@
 
 namespace AEcalle\Oc\Php\Project5\Controller;
 
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use AEcalle\Oc\Php\Project5\Service\TokenCSRFManager;
 use AEcalle\Oc\Php\Project5\Entity\Post;
 use AEcalle\Oc\Php\Project5\Form\Form;
-use AEcalle\Oc\Php\Project5\Service\TokenCSRFManager;
-use Symfony\Component\HttpFoundation\Response;
 use Cocur\Slugify\Slugify;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
-final class BackController extends AbstractController
+final class PostController extends AbstractController
 {
     public function createPost(): Response
     {
@@ -98,83 +98,5 @@ final class BackController extends AbstractController
         }
 
         return $this->redirect('posts');
-    }
-
-    public function comments(): Response
-    {
-        $this->checkAuth();
-
-        $comments = $this->commentRepository->findAll();
-
-        return $this->render('back/comments.html.twig',
-            [           
-                'comments'=>$comments,
-            ]
-        );
-    }
-
-    public function publishComment(int $id, bool $publish): RedirectResponse
-    {
-        $this->checkAuth();     
-
-        $comment = $this->commentRepository->find($id);
-        $comment->setPublished($publish);
-        $this->commentRepository->update($comment);
-
-        $this->session->getFlashBag()->add('success','Commentaire mis à jour !');
-        return $this->redirect('comments');
-    }
-
-    public function users(): Response
-    {
-        $this->checkAuth('admin');
-
-        $users = $this->userRepository->findAll();
-
-        return $this->render('back/users.html.twig',
-            [
-                'users'=>$users,
-            ]
-        ); 
-    }
-
-    public function updateUser(int $id): Response
-    {   
-        $this->checkAuth('admin');        
-
-        $user = $this->userRepository->find($id);
-
-        $form = new Form($user,'User');
-
-        $user = $form->handleRequest($this->request);
-        
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->userRepository->update($user);
-
-            $this->session->getFlashBag()->add('success','Utilisateur modifié !');
-            return $this->redirect('users');
-        }
-
-        return $this->render('back/updateUser.html.twig',
-            [
-                'form' => $form,
-                'user' => $user,
-            ]
-        );
-    }
-
-    public function deleteUser(int $id, string $token): RedirectResponse
-    {
-        $this->checkAuth('admin');
-
-        $tokenCSRFManager = new TokenCSRFManager();
-        $this->request->request->set('User_token',$token);
-
-        if ($tokenCSRFManager->verifToken('User', $this->request)){
-            $this->userRepository->delete($id);
-            $this->session->getFlashBag()->add('success','Utilisateur supprimé !');
-        }
-
-        return $this->redirect('users');
     }
 }

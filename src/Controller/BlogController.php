@@ -9,7 +9,7 @@ use AEcalle\Oc\Php\Project5\Entity\Comment;
 use AEcalle\Oc\Php\Project5\Entity\User;
 use AEcalle\Oc\Php\Project5\Form\Form;
 
-final class FrontController extends AbstractController
+final class BlogController extends AbstractController
 {
     public function home(): Response
     {
@@ -104,7 +104,8 @@ final class FrontController extends AbstractController
             $this->session->set('userId', $userInDb->getId());
             
             return $this->redirect('createPost');
-        }else if($form->isSubmitted()){
+        }
+        if($form->isSubmitted()){
 
             foreach ($form->getConstraintViolation() as $violation){
                 $this->session->getFlashBag()->add('warning', $violation);
@@ -132,9 +133,9 @@ final class FrontController extends AbstractController
             return $this->redirect('createUser');
         }
 
-        return $this->render('front/createUser.html.twig',            
+        return $this->render('front/createUser.html.twig',
             [
-                'form' => $form,                
+                'form' => $form,
             ]
         );
     }
