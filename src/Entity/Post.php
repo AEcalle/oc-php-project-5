@@ -38,8 +38,8 @@ final class Post
     public function setTitle(string $title): self
     {
         $this->title = $title;
-
-        Assertion::notEmpty(
+        $assertion = new Assertion();
+        $assertion->notEmpty(
             $title,
             'Le champ titre doit être renseigné.'
         );
@@ -67,8 +67,8 @@ final class Post
     public function setStandfirst(string $standfirst): self
     {
         $this->standfirst = $standfirst;
-
-        Assertion::notEmpty(
+        $assertion = new Assertion();
+        $assertion->notEmpty(
             $standfirst,
             'Le champ chapô doit être renseigné.'
         );
@@ -84,8 +84,8 @@ final class Post
     public function setContent(string $content): self
     {
         $this->content = $content;
-
-        Assertion::notEmpty(
+        $assertion = new Assertion();
+        $assertion->notEmpty(
             $content,
             'Le champ contenu doit être renseigné.'
         );

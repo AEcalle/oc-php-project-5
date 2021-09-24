@@ -100,10 +100,9 @@ abstract class AbstractController
         ?callable $callable = null,
         string $flashMessage = ''
     ): bool {
-        if (null === $object) {
-            $className = 'AEcalle\Oc\Php\Project5\Entity\\'.$formName;
-            $form = new Form(new $className(), $formName);
-        } else {
+        $className = 'AEcalle\Oc\Php\Project5\Entity\\'.$formName;
+        $form = new Form(new $className(), $formName);
+        if (null !== $object) {
             $form = new Form($object, $formName);
         }
 
@@ -116,8 +115,8 @@ abstract class AbstractController
         $form->handleRequest($this->request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if (null !== $callable) {
-                call_user_func_array($callable, [$form->getEntity()]);
+            if (is_callable($callable)) {
+                $callable($form->getEntity());
             }
             $this->session->getFlashBag()
                 ->add(

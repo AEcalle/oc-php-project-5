@@ -34,7 +34,7 @@ final class PostRepository extends AbstractRepository
             ':user_id' => $post->getUserId(),
         ]);
 
-        return $this->find(intval(parent::$db->lastInsertId()));
+        return $this->find((int) parent::$db->lastInsertId());
     }
 
     public function update(Post $post): Post

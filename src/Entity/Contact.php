@@ -20,8 +20,8 @@ final class Contact
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        Assertion::notEmpty(
+        $assertion = new Assertion();
+        $assertion->notEmpty(
             $name,
             'Le champ nom doit être renseigné.'
         );
@@ -37,12 +37,12 @@ final class Contact
     public function setEmail(string $email): self
     {
         $this->email = $email;
-
-        Assertion::notEmpty(
+        $assertion = new Assertion();
+        $assertion->notEmpty(
             $email,
             'Le champ email doit être renseigné.'
         );
-        Assertion::email(
+        $assertion->email(
             $email,
             'Le format de l\'adresse email est incorrecte.'
         );
@@ -58,8 +58,8 @@ final class Contact
     public function setMessage(string $message): self
     {
         $this->message = $message;
-
-        Assertion::notEmpty(
+        $assertion = new Assertion();
+        $assertion->notEmpty(
             $message,
             'Le champ message doit être renseigné.'
         );

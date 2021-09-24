@@ -35,8 +35,8 @@ final class Comment
     public function setContent(string $content): self
     {
         $this->content = $content;
-
-        Assertion::notEmpty(
+        $assertion = new Assertion();
+        $assertion->notEmpty(
             $content,
             'Le champ commentaire doit être renseigné.'
         );
@@ -64,8 +64,8 @@ final class Comment
     public function setWriter(string $writer): self
     {
         $this->writer = $writer;
-
-        Assertion::notEmpty(
+        $assertion = new Assertion();
+        $assertion->notEmpty(
             $writer,
             'Le champ utilisateur doit être renseigné.'
         );

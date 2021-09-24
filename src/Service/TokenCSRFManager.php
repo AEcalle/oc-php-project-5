@@ -16,11 +16,10 @@ final class TokenCSRFManager
         if ($session->get($name.'_token') === null) {
             $token = uniqid((string) rand(), true);
             $session->set($name.'_token', $token);
-        } else {
-            $token = $session->get($name.'_token');
+            return $token;
         }
 
-        return $token;
+        return $session->get($name.'_token');
     }
 
     public function verifToken(string $name, Request $request): bool

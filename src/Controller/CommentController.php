@@ -23,12 +23,12 @@ final class CommentController extends AbstractController
         );
     }
 
-    public function publishComment(int $id, bool $publish): RedirectResponse
+    public function publishComment(string $id, string $publish): RedirectResponse
     {
         $this->checkAuth();
 
-        $comment = $this->commentRepository->find($id);
-        $comment->setPublished($publish);
+        $comment = $this->commentRepository->find((int) $id);
+        $comment->setPublished((bool) $publish);
         $this->commentRepository->update($comment);
 
         $this->session->getFlashBag()

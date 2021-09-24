@@ -47,11 +47,11 @@ final class PostController extends AbstractController
         );
     }
 
-    public function updatePost(int $id): Response
+    public function updatePost(string $id): Response
     {
         $this->checkAuth();
 
-        $post = $this->postRepository->find($id);
+        $post = $this->postRepository->find((int) $id);
 
         $isFormHandled = $this->handleform(
             'Post',
@@ -77,7 +77,7 @@ final class PostController extends AbstractController
         );
     }
 
-    public function deletePost(int $id, string $token): RedirectResponse
+    public function deletePost(string $id, string $token): RedirectResponse
     {
         $this->checkAuth();
 
@@ -86,7 +86,7 @@ final class PostController extends AbstractController
 
         if ($tokenCSRFManager->verifToken('Post', $this->request)) {
             $comments = $this->commentRepository->findBy(
-                ['post_id' => $id],
+                ['post_id' => (int) $id],
                 [],
                 0,
                 1000
@@ -94,7 +94,7 @@ final class PostController extends AbstractController
             foreach ($comments as $comment) {
                 $this->commentRepository->delete($comment->getId());
             }
-            $this->postRepository->delete($id);
+            $this->postRepository->delete((int) $id);
             $this->session->getFlashBag()->add('success', 'Post supprimé !');
         }
 

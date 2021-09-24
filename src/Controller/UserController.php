@@ -24,11 +24,11 @@ final class UserController extends AbstractController
         );
     }
 
-    public function updateUser(int $id): Response
+    public function updateUser(string $id): Response
     {
         $this->checkAuth('admin');
 
-        $user = $this->userRepository->find($id);
+        $user = $this->userRepository->find((int) $id);
 
         $isFormHandled = $this->handleform(
             'User',
@@ -39,7 +39,7 @@ final class UserController extends AbstractController
         );
 
         if ($isFormHandled) {
-            $this->redirect('updateUser', ['id' => $id]);
+            return $this->redirect('updateUser', ['id' => $id]);
         }
 
         return $this->render(

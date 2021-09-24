@@ -48,12 +48,12 @@ final class BlogController extends AbstractController
         ]);
     }
 
-    public function post(int $id, string $slug): Response
+    public function post(string $id, string $slug): Response
     {
         $isFormHandled = $this->handleForm(
             'Comment',
             null,
-            ['createdAt' => new \DateTime(),'postId' => $id,
+            ['createdAt' => new \DateTime(),'postId' => (int) $id,
                 'published' => false,
             ],
             [$this->commentRepository,'add'],
@@ -63,10 +63,10 @@ final class BlogController extends AbstractController
         if ($isFormHandled) {
             return $this->redirect('post', ['id' => $id, 'slug' => $slug]);
         }
-        $post = $this->postRepository->find($id);
+        $post = $this->postRepository->find((int) $id);
         $comments = $this->commentRepository
             ->findBy(
-                ['post_id' => $id, 'published' => 1],
+                ['post_id' => (int) $id, 'published' => 1],
                 ['created_at' => 'DESC'],
                 0,
                 50

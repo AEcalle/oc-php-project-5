@@ -23,7 +23,7 @@ final class CommentRepository extends AbstractRepository
             ':post_id' => $comment->getPostId(),
         ]);
 
-        return $this->find(intval(parent::$db->lastInsertId()));
+        return $this->find((int) parent::$db->lastInsertId());
     }
 
     public function update(Comment $comment): Comment

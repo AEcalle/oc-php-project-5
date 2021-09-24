@@ -27,7 +27,7 @@ final class UserRepository extends AbstractRepository
             ':role' => $user->getRole(),
         ]);
 
-        return $this->find(intval(parent::$db->lastInsertId()));
+        return $this->find((int) parent::$db->lastInsertId());
     }
 
     public function update(User $user): User

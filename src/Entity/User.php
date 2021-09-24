@@ -34,12 +34,12 @@ final class User
     public function setEmail(string $email): self
     {
         $this->email = $email;
-
-        Assertion::email(
+        $assertion = new Assertion();
+        $assertion->email(
             $email,
             'Le format de l\'adresse email est incorrecte.'
         );
-        Assertion::notEmpty(
+        $assertion->notEmpty(
             $email,
             'Le champ email doit être renseigné.'
         );
@@ -55,8 +55,8 @@ final class User
     public function setPassword(string $password): self
     {
         $this->password = $password;
-
-        Assertion::notEmpty(
+        $assertion = new Assertion();
+        $assertion->notEmpty(
             $password,
             'Le champ password doit être renseigné.'
         );

@@ -63,10 +63,8 @@ final class Route
         $params = explode('#', $this->callable);
         $controller = 'AEcalle\Oc\Php\Project5\Controller\\'.$params[0];
         $controller = new $controller($router);
-        return call_user_func_array(
-            [$controller, $params[1]],
-            $this->matches
-        )
+        $method = $params[1];
+        return $controller->$method(...$this->matches)
             ->send();
     }
 
