@@ -1,29 +1,31 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AEcalle\Oc\Php\Project5\Entity;
 
 use Assert\Assertion;
 
-final class User 
+final class User
 {
     private int $id;
     private string $email;
     private string $password;
     private \DateTime $createdAt;
-    private string $role;    
+    private string $role;
 
     public function getId(): int
     {
         return $this->id;
     }
-  
+
     public function setId(int $id): self
     {
         $this->id = $id;
 
         return $this;
     }
- 
+
     public function getEmail(): string
     {
         return $this->email;
@@ -33,12 +35,18 @@ final class User
     {
         $this->email = $email;
 
-        Assertion::email($email, "Le format de l'adresse email est incorrecte.");
-        Assertion::notEmpty($email,"Le champ email doit être renseigné.");
+        Assertion::email(
+            $email,
+            'Le format de l\'adresse email est incorrecte.'
+        );
+        Assertion::notEmpty(
+            $email,
+            'Le champ email doit être renseigné.'
+        );
 
         return $this;
     }
- 
+
     public function getPassword(): string
     {
         return $this->password;
@@ -48,11 +56,14 @@ final class User
     {
         $this->password = $password;
 
-        Assertion::notEmpty($password,"Le champ password doit être renseigné.");
+        Assertion::notEmpty(
+            $password,
+            'Le champ password doit être renseigné.'
+        );
 
         return $this;
     }
-   
+
     public function getCreatedAt(): \DateTime
     {
         return $this->createdAt;
@@ -64,7 +75,7 @@ final class User
 
         return $this;
     }
-    
+
     public function getRole(): string
     {
         return $this->role;

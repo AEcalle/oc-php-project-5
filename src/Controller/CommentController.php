@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AEcalle\Oc\Php\Project5\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 final class CommentController extends AbstractController
 {
@@ -13,9 +15,10 @@ final class CommentController extends AbstractController
 
         $comments = $this->commentRepository->findAll();
 
-        return $this->render('back/comments.html.twig',
+        return $this->render(
+            'back/comments.html.twig',
             [
-                'comments'=>$comments,
+                'comments' => $comments,
             ]
         );
     }
@@ -28,7 +31,8 @@ final class CommentController extends AbstractController
         $comment->setPublished($publish);
         $this->commentRepository->update($comment);
 
-        $this->session->getFlashBag()->add('success','Commentaire mis à jour !');
+        $this->session->getFlashBag()
+            ->add('success', 'Commentaire mis à jour !');
         return $this->redirect('comments');
     }
 }

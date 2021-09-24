@@ -1,17 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AEcalle\Oc\Php\Project5\Repository;
 
 use AEcalle\Oc\Php\Project5\Entity\Post;
+use Cocur\Slugify\Slugify;
 
 final class PostRepository extends AbstractRepository
 {
     protected string $table = 'post';
 
-    public function add(Post $post): Post 
+    public function add(Post $post): Post
     {
-        $q = parent::$db->prepare("INSERT INTO {$this->table}(title,slug,standfirst,content,created_at,updated_at,author,user_id) 
-        VALUES(:title,:slug,:standfirst,:content,:created_at,:updated_at,:author,:user_id)");
+        $slugify = new Slugify();
+        $post->setSlug($slugify->slugify($post->getTitle()));
+
+        $q = parent::$db->prepare(
+            "INSERT INTO 
+        {$this->table}(title,slug,standfirst,content,created_at,
+        updated_at,author,user_id) 
+        VALUES(:title,:slug,:standfirst,:content,:created_at,
+        :updated_at,:author,:user_id)"
+        );
         $q->execute([
             ':title' => $post->getTitle(),
             ':slug' => $post->getSlug(),
@@ -21,15 +32,21 @@ final class PostRepository extends AbstractRepository
             ':updated_at' => $post->getUpdatedAt()->format('Y-m-d H:i:s'),
             ':author' => $post->getAuthor(),
             ':user_id' => $post->getUserId(),
-        ]);      
+        ]);
 
-        return $this->find(parent::$db->lastInsertId());
+        return $this->find(intval(parent::$db->lastInsertId()));
     }
 
-    public function update(Post $post): Post 
+    public function update(Post $post): Post
     {
-        $q = parent::$db->prepare("UPDATE {$this->table} SET title = :title, slug = :slug, standfirst = :standfirst, 
-        content = :content, created_at = :created_at,updated_at = :updated_at,author = :author ,user_id = :user_id WHERE id = :id");
+        $slugify = new Slugify();
+        $post->setSlug($slugify->slugify($post->getTitle()));
+
+        $q = parent::$db->prepare("UPDATE {$this->table} 
+        SET title = :title, slug = :slug, standfirst = :standfirst, 
+        content = :content, created_at = :created_at,updated_at = :updated_at,
+        author = :author ,user_id = :user_id 
+        WHERE id = :id");
         $q->execute([
             ':id' => $post->getId(),
             ':title' => $post->getTitle(),
@@ -40,7 +57,7 @@ final class PostRepository extends AbstractRepository
             ':updated_at' => $post->getUpdatedAt()->format('Y-m-d H:i:s'),
             ':author' => $post->getAuthor(),
             ':user_id' => $post->getUserId(),
-        ]);        
+        ]);
 
         return $this->find($post->getId());
     }

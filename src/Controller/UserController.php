@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AEcalle\Oc\Php\Project5\Controller;
 
-use AEcalle\Oc\Php\Project5\Form\Form;
 use AEcalle\Oc\Php\Project5\Service\TokenCSRFManager;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 final class UserController extends AbstractController
 {
@@ -15,33 +16,35 @@ final class UserController extends AbstractController
 
         $users = $this->userRepository->findAll();
 
-        return $this->render('back/users.html.twig',
+        return $this->render(
+            'back/users.html.twig',
             [
-                'users'=>$users,
+                'users' => $users,
             ]
-        ); 
+        );
     }
 
     public function updateUser(int $id): Response
-    {   
+    {
         $this->checkAuth('admin');
 
         $user = $this->userRepository->find($id);
 
-        $form = new Form($user,'User');
+        $isFormHandled = $this->handleform(
+            'User',
+            $user,
+            [],
+            [$this->userRepository,'update'],
+            'Utilisateur modifié !'
+        );
 
-        $user = $form->handleRequest($this->request);
-        
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->userRepository->update($user);
-
-            $this->session->getFlashBag()->add('success','Utilisateur modifié !');
-            return $this->redirect('users');
+        if ($isFormHandled) {
+            $this->redirect('updateUser', ['id' => $id]);
         }
 
-        return $this->render('back/updateUser.html.twig',
+        return $this->render(
+            'back/updateUser.html.twig',
             [
-                'form' => $form,
                 'user' => $user,
             ]
         );
@@ -52,11 +55,12 @@ final class UserController extends AbstractController
         $this->checkAuth('admin');
 
         $tokenCSRFManager = new TokenCSRFManager();
-        $this->request->request->set('User_token',$token);
+        $this->request->request->set('User_token', $token);
 
-        if ($tokenCSRFManager->verifToken('User', $this->request)){
+        if ($tokenCSRFManager->verifToken('User', $this->request)) {
             $this->userRepository->delete($id);
-            $this->session->getFlashBag()->add('success','Utilisateur supprimé !');
+            $this->session
+                ->getFlashBag()->add('success', 'Utilisateur supprimé !');
         }
 
         return $this->redirect('users');

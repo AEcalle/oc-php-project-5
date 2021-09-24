@@ -17,26 +17,23 @@
 <div class="container px-4 px-lg-5">
     <div class="row gx-4 gx-lg-5 py-5 justify-content-center">
         <div class="col-md-10 col-lg-8 col-xl-7">
-            {% for errorMessage in form.constraintViolation %}
-                <div class="text-danger small">{{errorMessage}}</div> 
+            {% for message in session.getFlashBag.get('success') %}
+                <div class="text-success small">{{ message }}</div>
             {% endfor %}
-            {% for message in session.getFlashBag.get('success') %}          
-                <div class="text-success small">{{ message }}</div> 
-            {% endfor %}  
-            {% for message in session.getFlashBag.get('warning') %}          
-                <div class="text-warning small">{{ message }}</div> 
-            {% endfor %}         
-            <form id="loginForm" method="post" action=""> 
-            <input type="hidden" name="{{form.name}}_token" id="{{form.name}}_token" value="{{form.token}}">               
+            {% for message in session.getFlashBag.get('warning') %}
+                <div class="text-warning small">{{ message }}</div>
+            {% endfor %}
+            <form id="loginForm" method="post" action="">
+            <input type="hidden" name="{{ session.get('form').name }}_token" id="{{ session.get('form').name }}_token" value="{{ session.get('form').token }}">
                 <div class="form-floating">
                     <input class="form-control" name="email" id="email" type="email" placeholder="Email" required />
-                    <label for="email">Email</label>                            
-                </div> 
+                    <label for="email">Email</label>
+                </div>
                 <div class="form-floating">
                     <input class="form-control" name="password" id="password" type="password" placeholder="Mot de passe" required />
-                    <label for="password">Mot de Passe</label>                            
-                </div>    
-                                                            
+                    <label for="password">Mot de Passe</label>
+                </div>
+
                 <button class="btn btn-primary my-5 text-uppercase" id="submitButton" type="submit">Envoyer</button>
             </form>
         </div>

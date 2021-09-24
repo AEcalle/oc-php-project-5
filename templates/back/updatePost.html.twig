@@ -16,14 +16,14 @@
 <div class="container px-4 px-lg-5">
     <div class="row gx-4 gx-lg-5 py-5 justify-content-center">
         <div class="col-md-10 col-lg-8 col-xl-7">
-            {% for error_message in form.constraintViolation %}
-                <div class="text-danger small">{{ error_message }}</div>
-            {% endfor %}
             {% for message in session.getFlashBag.get('success') %}
                 <div class="text-success small">{{ message }}</div>
             {% endfor %}
+            {% for message in session.getFlashBag.get('warning') %}
+                <div class="text-warning small">{{ message }}</div>
+            {% endfor %}
             <form id="postForm" method="post">
-            <input type="hidden" name="{{ form.name }}_token" id="{{ form.name }}_token" value="{{ form.token }}">
+            <input type="hidden" name="{{ session.get('form').name }}_token" id="{{ session.get('form').name }}_token" value="{{ session.get('form').token }}">
                 <div class="form-floating">
                     <input class="form-control" name="author" id="author" type="text" placeholder="Auteur" value="{{ post.author }}" required />
                     <label for="author">Auteur</label>
@@ -43,7 +43,7 @@
                 <button class="btn btn-primary my-5 text-uppercase" id="submitButton" type="submit">Modifier</button>
             </form>
 
-            <a href="/deletePost/{{ post.id }}/{{ form.token }}" class="text-danger my-5 text-uppercase" onclick="return window.confirm('Êtes vous sur de vouloir supprimer..')">Supprimer</a>
+            <a href="/deletePost/{{ post.id }}/{{ session.get('form').token }}" class="text-danger my-5 text-uppercase" onclick="return window.confirm('Êtes vous sur de vouloir supprimer..')">Supprimer</a>
         </div>
     </div>
 </div>

@@ -1,13 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AEcalle\Oc\Php\Project5\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use AEcalle\Oc\Php\Project5\Service\TokenCSRFManager;
-use AEcalle\Oc\Php\Project5\Entity\Post;
-use AEcalle\Oc\Php\Project5\Form\Form;
-use Cocur\Slugify\Slugify;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 final class PostController extends AbstractController
 {
@@ -15,39 +14,35 @@ final class PostController extends AbstractController
     {
         $this->checkAuth();
 
-        $form = new Form(new Post(),'Post');
-
-        $post = $form->handleRequest($this->request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $slugify = new Slugify();
-            $post->setSlug($slugify->slugify($post->getTitle()));
-            $post->setCreatedAt(new \DateTime());
-            $post->setUpdatedAt(new \DateTime());
-            $post->setUserId($this->session->get('userId'));
-
-            $this->postRepository->add($post);
-
-            $this->session->getFlashBag()->add('success','Post ajouté !');
+        $isFormHandled = $this->handleform(
+            'Post',
+            null,
+            [
+                'createdAt' => new \DateTime(),
+                'updatedAt' => new \DateTime(),
+                'userId' => $this->session->get('userId'),
+            ],
+            [$this->postRepository,'add'],
+            'Post ajouté !'
+        );
+        if ($isFormHandled) {
             return $this->redirect('createPost');
         }
 
-        return $this->render('back/createPost.html.twig',
-            [
-                'form' => $form,
-            ]
-        );
+        return $this->render('back/createPost.html.twig');
     }
 
     public function posts(): Response
     {
         $this->checkAuth();
 
-        $posts = $this->postRepository->findBy(['user_id' => $this->user->getId()], [], 0, 50);
-        
-        return $this->render('back/posts.html.twig',
+        $posts = $this->postRepository
+            ->findBy(['user_id' => $this->user->getId()], [], 0, 50);
+
+        return $this->render(
+            'back/posts.html.twig',
             [
-                'posts' => $posts
+                'posts' => $posts,
             ]
         );
     }
@@ -57,29 +52,26 @@ final class PostController extends AbstractController
         $this->checkAuth();
 
         $post = $this->postRepository->find($id);
-        $form = new Form($post,'Post');
 
-        $post = $form->handleRequest($this->request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            
-            $slugify = new Slugify();
-            $post->setSlug($slugify->slugify($post->getTitle()));
-            $post->setUpdatedAt(new \DateTime());
-
-            $post = $this->postRepository->update($post);
-            
-            $this->session->getFlashBag()->add('success','Post modifié !');
-            return $this->redirect('updatePost',
+        $isFormHandled = $this->handleform(
+            'Post',
+            $post,
+            ['updatedAt' => new \DateTime()],
+            [$this->postRepository, 'update'],
+            'Post modifié !'
+        );
+        if ($isFormHandled) {
+            return $this->redirect(
+                'updatePost',
                 [
-                    'id' => $id
+                    'id' => $id,
                 ]
             );
         }
 
-        return $this->render('back/updatePost.html.twig',
+        return $this->render(
+            'back/updatePost.html.twig',
             [
-                'form' => $form,
                 'post' => $post,
             ]
         );
@@ -90,11 +82,20 @@ final class PostController extends AbstractController
         $this->checkAuth();
 
         $tokenCSRFManager = new TokenCSRFManager();
-        $this->request->request->set('Post_token',$token);
-        
-        if ($tokenCSRFManager->verifToken('Post', $this->request)){
+        $this->request->request->set('Post_token', $token);
+
+        if ($tokenCSRFManager->verifToken('Post', $this->request)) {
+            $comments = $this->commentRepository->findBy(
+                ['post_id' => $id],
+                [],
+                0,
+                1000
+            );
+            foreach ($comments as $comment) {
+                $this->commentRepository->delete($comment->getId());
+            }
             $this->postRepository->delete($id);
-            $this->session->getFlashBag()->add('success','Post supprimé !');
+            $this->session->getFlashBag()->add('success', 'Post supprimé !');
         }
 
         return $this->redirect('posts');

@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AEcalle\Oc\Php\Project5\Controller;
 
 use AEcalle\Oc\Php\Project5\Entity\User;
+use AEcalle\Oc\Php\Project5\Form\Form;
 use AEcalle\Oc\Php\Project5\Repository\CommentRepository;
 use AEcalle\Oc\Php\Project5\Repository\PostRepository;
 use AEcalle\Oc\Php\Project5\Repository\UserRepository;
@@ -17,7 +20,6 @@ use Twig\Loader\FilesystemLoader;
 
 abstract class AbstractController
 {
-    private Router $router;
     protected Request $request;
     protected Session $session;
     protected Authentication $authorization;
@@ -25,6 +27,7 @@ abstract class AbstractController
     protected ?User $user = null;
     protected PostRepository $postRepository;
     protected CommentRepository $commentRepository;
+    private Router $router;
 
     public function __construct(Router $router)
     {
@@ -32,24 +35,21 @@ abstract class AbstractController
         $this->request = $this->router->getRequest();
         $this->session = new Session();
         $this->authorization = new Authentication();
-        $this->userRepository = new UserRepository();
-        $this->postRepository = new PostRepository();
-        $this->commentRepository = new CommentRepository();
+        $this->userRepository = new UserRepository($this->request);
+        $this->postRepository = new PostRepository($this->request);
+        $this->commentRepository = new CommentRepository($this->request);
         $this->user = $this->getUser();
     }
 
     /**
      * @param <string, mixed> $context
      */
-
     public function render(string $view, array $context = []): Response
     {
         $loader = new FilesystemLoader('../templates');
         $twig = new Environment($loader);
         $twig->addGlobal('session', $this->session);
-        if (isset($this->user)){
-            $twig->addGlobal('userConnected', $this->user);
-        }            
+        $twig->addGlobal('userConnected', $this->user);
 
         return new Response($twig->render($view, $context));
     }
@@ -57,38 +57,82 @@ abstract class AbstractController
     /**
      * @param <string, mixed> $context
      */
-
-    public function redirect(string $route, array $context = []): RedirectResponse
-    {
+    public function redirect(
+        string $route,
+        array $context = []
+    ): RedirectResponse {
         $path = $this->router->generateUrl($route, $context);
         return new RedirectResponse($path);
     }
 
-    public function checkAuth(string $roleRequired = "author")
-    {        
-        if (null === $this->user){
-            $this->session->getFlashBag()->add('warning','Access Denied');
+    public function checkAuth(string $roleRequired = 'author'): void
+    {
+        if (null === $this->user) {
+            $this->session->getFlashBag()->add('warning', 'Access Denied');
             throw new AccessDeniedException();
         }
 
-        if ($this->user->getRole() === "unauthorised" || ($roleRequired === "admin" && $this->user->getRole() === "author")){
-            $this->session->getFlashBag()->add('warning','Access Denied');
+        if ($this->user->getRole() === 'unauthorised' ||
+        ($roleRequired === 'admin' && $this->user->getRole() === 'author')) {
+            $this->session->getFlashBag()->add('warning', 'Access Denied');
             throw new AccessDeniedException();
         }
     }
 
     public function getUser(): ?User
     {
-        if (! $this->authorization->check($this->session)){
+        if (! $this->authorization->checkUserSession($this->session)) {
             return null;
         }
-        
+
         if (null === $this->user) {
-            $this->user = $this->userRepository->find($this->session->get('userId'));
+            $this->user = $this->userRepository
+                ->find($this->session->get('userId'));
         }
-        
+
         return $this->user;
     }
 
-    
+    public function handleform(
+        string $formName,
+        ?object $object = null,
+        array $data = [],
+        ?callable $callable = null,
+        string $flashMessage = ''
+    ): bool {
+        if (null === $object) {
+            $className = 'AEcalle\Oc\Php\Project5\Entity\\'.$formName;
+            $form = new Form(new $className(), $formName);
+        } else {
+            $form = new Form($object, $formName);
+        }
+
+        $this->session->set('form', $form);
+
+        foreach ($data as $k => $v) {
+            $this->request->request->set($k, $v);
+        }
+
+        $form->handleRequest($this->request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if (null !== $callable) {
+                call_user_func_array($callable, [$form->getEntity()]);
+            }
+            $this->session->getFlashBag()
+                ->add(
+                    'success',
+                    $flashMessage
+                );
+            return true;
+        }
+        if ($form->isSubmitted()) {
+            foreach ($form->getConstraintViolation() as $violation) {
+                $this->session->getFlashBag()->add('warning', $violation);
+            }
+            return true;
+        }
+
+        return false;
+    }
 }

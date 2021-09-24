@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AEcalle\Oc\Php\Project5\Entity;
 
 use Assert\Assertion;
@@ -37,11 +39,14 @@ final class Post
     {
         $this->title = $title;
 
-        Assertion::notEmpty($title,"Le champ titre doit être renseigné.");
+        Assertion::notEmpty(
+            $title,
+            'Le champ titre doit être renseigné.'
+        );
 
         return $this;
     }
-    
+
     public function getSlug(): string
     {
         return $this->slug;
@@ -63,7 +68,10 @@ final class Post
     {
         $this->standfirst = $standfirst;
 
-        Assertion::notEmpty($standfirst,"Le champ chapô doit être renseigné.");
+        Assertion::notEmpty(
+            $standfirst,
+            'Le champ chapô doit être renseigné.'
+        );
 
         return $this;
     }
@@ -77,7 +85,10 @@ final class Post
     {
         $this->content = $content;
 
-        Assertion::notEmpty($content,"Le champ contenu doit être renseigné.");
+        Assertion::notEmpty(
+            $content,
+            'Le champ contenu doit être renseigné.'
+        );
 
         return $this;
     }
@@ -113,7 +124,6 @@ final class Post
 
     public function setAuthor(string $author): self
     {
-
         $this->author = $author;
 
         return $this;
@@ -129,7 +139,5 @@ final class Post
         $this->userId = $userId;
 
         return $this;
-    } 
-
-    
+    }
 }

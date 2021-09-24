@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AEcalle\Oc\Php\Project5\Repository;
 
 use AEcalle\Oc\Php\Project5\Entity\Comment;
@@ -8,33 +10,36 @@ final class CommentRepository extends AbstractRepository
 {
     protected string $table = 'comment';
 
-    public function add(Comment $comment): Comment 
+    public function add(Comment $comment): Comment
     {
-        $q = parent::$db->prepare("INSERT INTO {$this->table}(content, created_at, writer, published, post_id) 
+        $q = parent::$db->prepare("INSERT INTO 
+        {$this->table}(content, created_at, writer, published, post_id) 
         VALUES(:content, :created_at, :writer, :published, :post_id)");
-        $q->execute([           
+        $q->execute([
             ':content' => $comment->getContent(),
             ':created_at' => $comment->getCreatedAt()->format('Y-m-d H:i:s'),
             ':writer' => $comment->getWriter(),
             ':published' => $comment->getPublished(),
             ':post_id' => $comment->getPostId(),
-        ]);        
+        ]);
 
-        return $this->find(parent::$db->lastInsertId());
+        return $this->find(intval(parent::$db->lastInsertId()));
     }
 
-    public function update(Comment $comment): Comment 
+    public function update(Comment $comment): Comment
     {
-        $q = parent::$db->prepare("UPDATE {$this->table} SET content = :content, created_at = :created_at,
-        writer = :writer, published = :published, post_id = :post_id WHERE id = :id");
+        $q = parent::$db->prepare("UPDATE 
+        {$this->table} SET content = :content, created_at = :created_at,
+        writer = :writer, published = :published, post_id = :post_id 
+        WHERE id = :id");
         $q->execute([
-            ':id' => $comment->getId(),      
+            ':id' => $comment->getId(),
             ':content' => $comment->getContent(),
             ':created_at' => $comment->getCreatedAt()->format('Y-m-d H:i:s'),
             ':writer' => $comment->getWriter(),
             ':published' => $comment->getPublished(),
             ':post_id' => $comment->getPostId(),
-        ]);        
+        ]);
 
         return $this->find($comment->getId());
     }

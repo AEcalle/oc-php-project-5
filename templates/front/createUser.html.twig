@@ -25,7 +25,7 @@
             {% endfor %}
                 <div class="form-floating">
                     <input class="form-control" name="email" id="email" type="email" placeholder="Email" required />
-                    <input type="hidden" name="{{ form.name }}_token" id="{{ form.name }}_token" value="{{ form.token }}">
+                    <input type="hidden" name="{{ session.get('form').name }}_token" id="{{ session.get('form').name }}_token" value="{{ session.get('form').token }}">
                     <label for="email">Email</label>
                 </div>
                 <div class="form-floating">
