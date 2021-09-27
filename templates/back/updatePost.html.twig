@@ -1,0 +1,51 @@
+{% extends "back/template.html.twig" %}
+{% block body %}
+
+<header class="masthead" style="background-image: url('../assets/img/home-bg.jpg')">
+    <div class="container position-relative px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <div class="site-heading">
+                    <h1>Modifier un Post</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- Main Content-->
+<div class="container px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 py-5 justify-content-center">
+        <div class="col-md-10 col-lg-8 col-xl-7">
+            {% for message in session.getFlashBag.get('success') %}
+                <div class="text-success small">{{ message }}</div>
+            {% endfor %}
+            {% for message in session.getFlashBag.get('warning') %}
+                <div class="text-warning small">{{ message }}</div>
+            {% endfor %}
+            <form id="postForm" method="post">
+            <input type="hidden" name="{{ session.get('form').name }}_token" id="{{ session.get('form').name }}_token" value="{{ session.get('form').token }}">
+                <div class="form-floating">
+                    <input class="form-control" name="author" id="author" type="text" placeholder="Auteur" value="{{ post.author }}" required />
+                    <label for="author">Auteur</label>
+                </div>
+                <div class="form-floating">
+                    <input class="form-control" name="title" id="title" type="text" placeholder="Titre" value="{{ post.title }}" required />
+                    <label for="title">Titre</label>
+                </div>
+                <div class="form-floating">
+                    <textarea class="form-control" name="standfirst" id="standfirst" placeholder="Chapô" style="height: 12rem" required>{{ post.standfirst }}</textarea>
+                    <label for="standfirst">Chapô</label>
+                </div>
+                <div class="form-floating">
+                    <textarea class="form-control" name="content" id="content" placeholder="Contenu" style="height: 24rem" required>{{ post.content }}</textarea>
+                    <label for="content">Contenu</label>
+                </div>
+                <button class="btn btn-primary my-5 text-uppercase" id="submitButton" type="submit">Modifier</button>
+            </form>
+
+            <a href="/deletePost/{{ post.id }}/{{ session.get('form').token }}" class="text-danger my-5 text-uppercase" onclick="return window.confirm('Êtes vous sur de vouloir supprimer..')">Supprimer</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

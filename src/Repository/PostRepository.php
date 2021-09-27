@@ -1,48 +1,64 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AEcalle\Oc\Php\Project5\Repository;
 
 use AEcalle\Oc\Php\Project5\Entity\Post;
-use AEcalle\Oc\Php\Project5\Repository\AbstractRepository;
+use Cocur\Slugify\Slugify;
 
-class PostRepository extends AbstractRepository
+final class PostRepository extends AbstractRepository
 {
     protected string $table = 'post';
 
-    public function add(string $title, string $standfirst, string $content, string $createdAt, string $updatedAt, 
-    string $userId): Post {
-        $q = parent::$db->prepare("INSERT INTO $this->table(title,standfirst,content,created_at,updated_at,user_id) 
-        VALUES(:title,:standfirst,:content,:created_at,:updated_at,:user_id)");
+    public function add(Post $post): Post
+    {
+        $slugify = new Slugify();
+        $post->setSlug($slugify->slugify($post->getTitle()));
+
+        $q = parent::$db->prepare(
+            "INSERT INTO 
+        {$this->table}(title,slug,standfirst,content,created_at,
+        updated_at,author,user_id) 
+        VALUES(:title,:slug,:standfirst,:content,:created_at,
+        :updated_at,:author,:user_id)"
+        );
         $q->execute([
-            ':title' => $title,
-            ':standfirst' => $standfirst,
-            ':content' => $content,
-            ':created_at' => $createdAt,
-            ':updated_at' => $updatedAt,
-            ':user_id' => $userId
+            ':title' => $post->getTitle(),
+            ':slug' => $post->getSlug(),
+            ':standfirst' => $post->getStandfirst(),
+            ':content' => $post->getContent(),
+            ':created_at' => $post->getCreatedAt()->format('Y-m-d H:i:s'),
+            ':updated_at' => $post->getUpdatedAt()->format('Y-m-d H:i:s'),
+            ':author' => $post->getAuthor(),
+            ':user_id' => $post->getUserId(),
         ]);
 
-        $entity = $this->find(parent::$db->lastInsertId());
-
-        return $entity;
+        return $this->find((int) parent::$db->lastInsertId());
     }
 
-    public function update(int $id, string $title, string $standfirst, string $content, string $createdAt, string $updatedAt,
-        string $userId): Post {
-        $q = parent::$db->prepare("UPDATE $this->table SET title = :title, standfirst = :standfirst, 
-        content = :content, created_at = :created_at,updated_at = :updated_at,user_id = :user_id WHERE id = :id");
+    public function update(Post $post): Post
+    {
+        $slugify = new Slugify();
+        $post->setSlug($slugify->slugify($post->getTitle()));
+
+        $q = parent::$db->prepare("UPDATE {$this->table} 
+        SET title = :title, slug = :slug, standfirst = :standfirst, 
+        content = :content, created_at = :created_at,updated_at = :updated_at,
+        author = :author ,user_id = :user_id 
+        WHERE id = :id");
         $q->execute([
-            ':id' => $id,
-            ':title' => $title,
-            ':standfirst' => $standfirst,
-            ':content' => $content,
-            ':created_at' => $createdAt,
-            ':updated_at' => $updatedAt,
-            ':user_id' => $userId
+            ':id' => $post->getId(),
+            ':title' => $post->getTitle(),
+            ':slug' => $post->getSlug(),
+            ':standfirst' => $post->getStandfirst(),
+            ':content' => $post->getContent(),
+            ':created_at' => $post->getCreatedAt()->format('Y-m-d H:i:s'),
+            ':updated_at' => $post->getUpdatedAt()->format('Y-m-d H:i:s'),
+            ':author' => $post->getAuthor(),
+            ':user_id' => $post->getUserId(),
         ]);
 
-        $entity = $this->find($id);
-
-        return $entity;
+        return $this->find($post->getId());
     }
 }

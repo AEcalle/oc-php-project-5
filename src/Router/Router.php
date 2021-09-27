@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AEcalle\Oc\Php\Project5\Router;
 
+use AEcalle\Oc\Php\Project5\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 
 final class Router
@@ -9,65 +12,50 @@ final class Router
     private Request $request;
 
     /**
-     * @var Route[]
+     * @var array<Route>
      */
     private array $routes = [];
 
     /**
-     * @var Route[]
+     * @var array<Route>
      */
     private array $namedRoutes = [];
 
-    public function __construct(Request $request)
+    public function __construct()
     {
-        $this->request = $request;
+        $this->request = Request::createFromGlobals();
     }
 
     /**
-     * 
-     * @param  string|callable $callable     
-     * 
+     * @param  string|callable $callable
      */
-    public function get(string $path, $callable, string $name = null): Route
+    public function get(string $path, $callable, ?string $name = null): Route
     {
         return $this->add($path, $callable, $name, 'GET');
     }
 
     /**
-     *
      * @param  string|callable $callable
-     * 
      */
-    public function post(string $path, $callable, string $name = null): Route
+    public function post(string $path, $callable, ?string $name = null): Route
     {
         return $this->add($path, $callable, $name, 'POST');
     }
 
-    /**
-     *      
-     * @param  string|callable $callable
-     * 
-     */
-    private function add(string $path, $callable, string $name = null, string $method): Route
+    public function run(Container $container): ?object
     {
-        $route = new Route($path, $callable);
-        $this->routes[$method][] = $route;
-        
-        if ($name) {
-            $this->namedRoutes[$name] = $route;
-        }
-        return $route;
-    }
-
-    public function run(): ?string
-    {
-        if (!isset($this->routes[$this->request->getMethod()])) {
+        if (! isset($this->routes[$this->request->getMethod()])) {
             throw new RouterException('REQUEST_METHOD doesn\'t exist');
         }
 
         foreach ($this->routes[$this->request->getMethod()] as $route) {
             if ($route->match($this->request->getPathInfo())) {
-                return $route->call($this);
+                try {
+                    return $route->call($container);
+                } catch (\Exception $e) {
+                    $route = new Route('/', 'BlogController#home');
+                    return $route->call($container);
+                }
             }
         }
 
@@ -75,22 +63,38 @@ final class Router
     }
 
     /**
-     *
-     * @param  string[] $params
-     * 
+     * @param  $params<string>
      */
 
     public function generateUrl(string $name, array $params): string
     {
-        if (!isset($this->namedRoutes[$name])) {
+        if (! isset($this->namedRoutes[$name])) {
             throw new RouterException('No route matches this name');
         }
-       
+
         return $this->namedRoutes[$name]->getUrl($params);
     }
-    
+
     public function getRequest(): Request
     {
         return $this->request;
+    }
+
+    /**
+     * @param  string|callable $callable
+     */
+    private function add(
+        string $path,
+        $callable,
+        string $name,
+        string $method
+    ): Route {
+        $route = new Route($path, $callable);
+        $this->routes[$method][] = $route;
+
+        if ($name) {
+            $this->namedRoutes[$name] = $route;
+        }
+        return $route;
     }
 }

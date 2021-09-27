@@ -1,0 +1,41 @@
+{% extends "front/template.html.twig" %}
+{% block body %}
+
+<header class="masthead" style="background-image: url('../assets/img/home-bg.jpg')">
+    <div class="container position-relative px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <div class="site-heading">
+                    <h1>Créer un Utilisateur</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="container px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 py-5 justify-content-center">
+        <div class="col-md-10 col-lg-8 col-xl-7">
+            <form id="contactForm" method="post">
+            {% for error_message in form.constraintViolation %}
+                <div class="text-danger small">{{ error_message }}</div>
+            {% endfor %}
+            {% for message in session.getFlashBag.get('success') %}
+                <div class="text-success small">{{ message }}</div>
+            {% endfor %}
+                <div class="form-floating">
+                    <input class="form-control" name="email" id="email" type="email" placeholder="Email" required />
+                    <input type="hidden" name="{{ session.get('form').name }}_token" id="{{ session.get('form').name }}_token" value="{{ session.get('form').token }}">
+                    <label for="email">Email</label>
+                </div>
+                <div class="form-floating">
+                    <input class="form-control" name="password" id="password" type="password" placeholder="Mot de passe" required />
+                    <label for="password">Mot de Passe</label>
+                </div>
+                <button class="btn btn-primary my-5 text-uppercase" id="submitButton" type="submit">Envoyer</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

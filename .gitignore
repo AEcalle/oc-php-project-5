@@ -1,2 +1,4 @@
 /vendor/
 .env.local
+.php-cs-fixer.cache
+phpinsights.php

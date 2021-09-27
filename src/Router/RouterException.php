@@ -1,10 +1,9 @@
 <?php
 
-namespace AEcalle\Oc\Php\Project5\Router;
+declare(strict_types=1);
 
-use Exception;
+namespace AEcalle\Oc\Php\Project5\Router;
 
 final class RouterException extends \Exception
 {
-
 }

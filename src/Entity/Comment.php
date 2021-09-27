@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AEcalle\Oc\Php\Project5\Entity;
 
 use Assert\Assertion;
 
-class Comment
+final class Comment
 {
     private int $id;
     private string $content;
@@ -12,12 +14,12 @@ class Comment
     private string $writer;
     private bool $published;
     private int $postId;
- 
+
     public function getId(): int
     {
         return $this->id;
     }
-    
+
     public function setId(int $id): self
     {
         $this->id = $id;
@@ -33,8 +35,11 @@ class Comment
     public function setContent(string $content): self
     {
         $this->content = $content;
-
-        Assertion::notEmpty($content,"Le champ commentaire doit être renseigné.");
+        $assertion = new Assertion();
+        $assertion->notEmpty(
+            $content,
+            'Le champ commentaire doit être renseigné.'
+        );
 
         return $this;
     }
@@ -43,7 +48,7 @@ class Comment
     {
         return $this->createdAt;
     }
-     
+
     public function setCreatedAt(\DateTime $createdAt): self
     {
         $this->createdAt = $createdAt;
@@ -59,8 +64,11 @@ class Comment
     public function setWriter(string $writer): self
     {
         $this->writer = $writer;
-
-        Assertion::notEmpty($writer,"Le champ utilisateur doit être renseigné.");
+        $assertion = new Assertion();
+        $assertion->notEmpty(
+            $writer,
+            'Le champ utilisateur doit être renseigné.'
+        );
 
         return $this;
     }
@@ -69,25 +77,23 @@ class Comment
     {
         return $this->published;
     }
-    
+
     public function setPublished(bool $published): self
     {
         $this->published = $published;
 
         return $this;
     }
- 
-    public function getPostId()
+
+    public function getPostId(): int
     {
         return $this->postId;
     }
- 
+
     public function setPostId(int $postId): self
     {
         $this->postId = $postId;
 
         return $this;
     }
-
-    
 }

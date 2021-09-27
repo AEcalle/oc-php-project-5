@@ -1,6 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AEcalle\Oc\Php\Project5\Repository;
+
+use AEcalle\Oc\Php\Project5\Service\PdoProvider;
+use Symfony\Component\HttpFoundation\Request;
 
 abstract class AbstractRepository
 {
@@ -10,12 +15,8 @@ abstract class AbstractRepository
 
     public function __construct()
     {
-        try {
-            self::$db = new \PDO("mysql:host={$_ENV['DB_HOST']};dbname={$_ENV['DB_NAME']};charset=utf8", $_ENV['DB_USERNAME'], $_ENV['DB_PASSWORD']);
-            self::$db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        } catch (\Exception $e) {
-            die('Erreur : ' . $e->getMessage());
-        }
+        $pdoProvider = new PdoProvider(Request::createFromGlobals());
+        self::$db = $pdoProvider->connect();
 
         $classNameExploded = explode('_', $this->table);
         $className = '';
@@ -26,93 +27,121 @@ abstract class AbstractRepository
         $this->class = $namespace . $className;
     }
 
-    public function find(int $id): Object
+    public function find(int $id): object
     {
-        $q = self::$db->prepare("SELECT * FROM  $this->table WHERE id = :id");
+        $q = self::$db->prepare("SELECT * FROM  {$this->table} WHERE id = :id");
         $q->execute([
-            ':id' => $id
+            ':id' => $id,
         ]);
-        $entity = $this->createEntity($q->fetch(\PDO::FETCH_ASSOC));
 
-        return $entity;
+        return $this->createEntity($q->fetch(\PDO::FETCH_ASSOC));
     }
 
     /**
-     * @return Object[]
+     * @return array<object>
      */
 
     public function findAll(): array
     {
-        $q = self::$db->prepare("SELECT * FROM $this->table");
+        $q = self::$db->prepare("SELECT * FROM {$this->table}");
         $q->execute();
         $entities = [];
         while ($data = $q->fetch(\PDO::FETCH_ASSOC)) {
             $entity = $this->createEntity($data);
             $entities[] = $entity;
         }
-
 
         return $entities;
     }
 
     /**
-     * @return Object[]
+     * @return array<object>
      */
 
-    public function findBy(array $criteria, array $orderBy, int $offset, int $nbRows): array
-    {
-        $whereClause = "";
-        if (!empty($criteria))
-        {
-            $whereClause = "WHERE ";
-            foreach($criteria as $k=>$v)
-            {
-                if (is_string($v))
-                {
-                    $whereClause .= "$k = '$v'";
+    public function findBy(
+        array $criteria,
+        array $orderBy,
+        int $offset,
+        int $nbRows
+    ): array {
+        $parameters = [];
+
+        $whereClause = '';
+
+        if ($criteria) {
+            $whereClause = 'WHERE ';
+            foreach ($criteria as $k => $v) {
+                $whereClause .= "${k} = :${k}";
+
+                if ($k !== array_key_last($criteria)) {
+                    $whereClause .= ' AND ';
                 }
-                else
-                {
-                    $whereClause .= "$k = $v";
-                }
-                
-                if ($k !== array_key_last($criteria)) 
-                {
-                    $whereClause .= " AND ";
-                }
+                $k = ":${k}";
+                $parameters[$k] = $v;
             }
-        } 
-        
-        $orderClause = "";
-        if (!empty($orderBy))
-        {
-            $orderClause = "ORDER BY ";
-            foreach ($orderBy as $k=>$v)
-            {
-                $orderClause .= "$k $v";
-                if ($k !== array_key_last($orderBy)) 
-                {
-                    $orderClause .= ", ";
+        }
+
+        $orderClause = '';
+        if ($orderBy) {
+            $orderClause = 'ORDER BY ';
+            foreach ($orderBy as $k => $v) {
+                $orderClause .= "${k} ${v}";
+                if ($k !== array_key_last($orderBy)) {
+                    $orderClause .= ', ';
                 }
             }
         }
-      
-        $q = self::$db->prepare("SELECT * FROM $this->table $whereClause $orderClause LIMIT :offset,:nbRows");
+
+        $q = self::$db->prepare(
+            "SELECT * FROM {$this->table} {$whereClause} {$orderClause} 
+            LIMIT :offset,:nbRows"
+        );
         $q->bindValue(':offset', $offset, \PDO::PARAM_INT);
-        $q->bindValue(':nbRows', $nbRows, \PDO::PARAM_INT);       
+        $q->bindValue(':nbRows', $nbRows, \PDO::PARAM_INT);
+        foreach ($parameters as $k => $v) {
+            $q->bindValue($k, $v);
+        }
         $q->execute();
+
         $entities = [];
         while ($data = $q->fetch(\PDO::FETCH_ASSOC)) {
             $entity = $this->createEntity($data);
             $entities[] = $entity;
         }
 
-
         return $entities;
-    }    
+    }
 
-    protected function createEntity(array $data): Object
-    {        
+    public function findOneBy(array $criteria): ?object
+    {
+        $entities = $this->findBy($criteria, [], 0, 1);
+
+        if (! $entities) {
+            return null;
+        }
+
+        return $entities[0];
+    }
+
+    public function delete($id): void
+    {
+        $q = self::$db->prepare("DELETE FROM {$this->table} WHERE id = :id");
+        $q->execute([
+            ':id' => $id,
+        ]);
+    }
+
+    public function count(): int
+    {
+        $q = self::$db->prepare("SELECT COUNT(id) FROM {$this->table}");
+        $q->execute();
+        $data = $q->fetch(\PDO::FETCH_ASSOC);
+
+        return (int) ($data['COUNT(id)']);
+    }
+
+    protected function createEntity(array $data): object
+    {
         $entity = new $this->class();
         foreach ($data as $k => $v) {
             $methodExploded = explode('_', $k);
@@ -120,28 +149,23 @@ abstract class AbstractRepository
             foreach ($methodExploded as $word) {
                 $method .= ucfirst($word);
             }
-            if (preg_match('#^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$#', $v)) {
+
+            $reflexionMethod = new \ReflectionMethod($entity, $method);
+            $parameters = $reflexionMethod->getParameters();
+            $type = $parameters[0]->getType()->getName();
+
+            if ($type === 'DateTime') {
                 $v = \DateTime::createFromFormat('Y-m-d H:i:s', $v);
             }
+            if ($type === 'int') {
+                $v = (int) ($v);
+            }
+            if ($type === 'bool') {
+                $v === '1' ? $v = true : $v = false;
+            }
+
             $entity->$method($v);
         }
         return $entity;
-    }
-
-    public function delete($id): void
-    {        
-        $q = self::$db->prepare("DELETE FROM $this->table WHERE id = :id");
-        $q->execute([
-            ':id' => $id
-        ]);
-    }
-
-    public function count(): int
-    {
-        $q = self::$db->prepare("SELECT COUNT(id) FROM $this->table");
-        $q->execute();        
-        $data = $q->fetch(\PDO::FETCH_ASSOC);
-
-        return intval($data['COUNT(id)']);
     }
 }
