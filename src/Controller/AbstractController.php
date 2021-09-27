@@ -6,8 +6,6 @@ namespace AEcalle\Oc\Php\Project5\Controller;
 
 use AEcalle\Oc\Php\Project5\Entity\User;
 use AEcalle\Oc\Php\Project5\Form\Form;
-use AEcalle\Oc\Php\Project5\Repository\CommentRepository;
-use AEcalle\Oc\Php\Project5\Repository\PostRepository;
 use AEcalle\Oc\Php\Project5\Repository\UserRepository;
 use AEcalle\Oc\Php\Project5\Router\Router;
 use AEcalle\Oc\Php\Project5\Service\Authentication;
@@ -23,22 +21,16 @@ abstract class AbstractController
     protected Request $request;
     protected Session $session;
     protected Authentication $authorization;
-    protected UserRepository $userRepository;
     protected ?User $user = null;
-    protected PostRepository $postRepository;
-    protected CommentRepository $commentRepository;
     private Router $router;
 
-    public function __construct(Router $router)
+    public function __construct(Router $router, Authentication $authentication, UserRepository $userRepository)
     {
         $this->router = $router;
         $this->request = $this->router->getRequest();
         $this->session = new Session();
-        $this->authorization = new Authentication();
-        $this->userRepository = new UserRepository($this->request);
-        $this->postRepository = new PostRepository($this->request);
-        $this->commentRepository = new CommentRepository($this->request);
-        $this->user = $this->getUser();
+        $this->authorization = $authentication;
+        $this->user = $this->getUser($userRepository);
     }
 
     /**
@@ -79,14 +71,14 @@ abstract class AbstractController
         }
     }
 
-    public function getUser(): ?User
+    public function getUser(UserRepository $userRepository): ?User
     {
         if (! $this->authorization->checkUserSession($this->session)) {
             return null;
         }
 
         if (null === $this->user) {
-            $this->user = $this->userRepository
+            $this->user = $userRepository
                 ->find($this->session->get('userId'));
         }
 

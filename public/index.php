@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 require '../vendor/autoload.php';
 
-use AEcalle\Oc\Php\Project5\Router\Router;
+use AEcalle\Oc\Php\Project5\DependencyInjection\Container;
 use Symfony\Component\Dotenv\Dotenv;
-use Symfony\Component\HttpFoundation\Request;
 
 $dotenv = new Dotenv();
 $dotenv->loadEnv('../.env');
 
-$router = new Router(Request::createFromGlobals());
+$container = new Container();
+$router = $container->get('AEcalle\Oc\Php\Project5\Router\Router');
 
 $router->get('/', 'BlogController#home', 'home');
 $router->post('/', 'BlogController#home', 'home');
@@ -63,4 +63,4 @@ $router->get(
 
     ->width('id', '[0-9]+')->width('token', '[a-zA-Z0-9.]+');
 
-$router->run();
+$router->run($container);

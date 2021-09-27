@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace AEcalle\Oc\Php\Project5\Controller;
 
+use AEcalle\Oc\Php\Project5\Repository\UserRepository;
 use AEcalle\Oc\Php\Project5\Service\TokenCSRFManager;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 final class UserController extends AbstractController
 {
-    public function users(): Response
+    public function users(UserRepository $userRepository): Response
     {
         $this->checkAuth('admin');
 
-        $users = $this->userRepository->findAll();
+        $users = $userRepository->findAll();
 
         return $this->render(
             'back/users.html.twig',
@@ -24,17 +25,17 @@ final class UserController extends AbstractController
         );
     }
 
-    public function updateUser(string $id): Response
+    public function updateUser(string $id, UserRepository $userRepository): Response
     {
         $this->checkAuth('admin');
 
-        $user = $this->userRepository->find((int) $id);
+        $user = $userRepository->find((int) $id);
 
         $isFormHandled = $this->handleform(
             'User',
             $user,
             [],
-            [$this->userRepository,'update'],
+            [$userRepository,'update'],
             'Utilisateur modifié !'
         );
 
@@ -50,7 +51,7 @@ final class UserController extends AbstractController
         );
     }
 
-    public function deleteUser(int $id, string $token): RedirectResponse
+    public function deleteUser(string $id, string $token, UserRepository $userRepository): RedirectResponse
     {
         $this->checkAuth('admin');
 
@@ -58,7 +59,7 @@ final class UserController extends AbstractController
         $this->request->request->set('User_token', $token);
 
         if ($tokenCSRFManager->verifToken('User', $this->request)) {
-            $this->userRepository->delete($id);
+            $userRepository->delete((int) $id);
             $this->session
                 ->getFlashBag()->add('success', 'Utilisateur supprimé !');
         }

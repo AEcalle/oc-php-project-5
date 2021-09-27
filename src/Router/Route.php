@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace AEcalle\Oc\Php\Project5\Router;
 
+use AEcalle\Oc\Php\Project5\DependencyInjection\Container;
+
 final class Route
 {
     private string $path;
@@ -58,12 +60,20 @@ final class Route
         return true;
     }
 
-    public function call(Router $router): ?object
+    public function call(Container $container): ?object
     {
         $params = explode('#', $this->callable);
-        $controller = 'AEcalle\Oc\Php\Project5\Controller\\'.$params[0];
-        $controller = new $controller($router);
+        $controllerName = 'AEcalle\Oc\Php\Project5\Controller\\'.$params[0];
+        $controller = $container->get($controllerName);
+        $reflectionClass = new \ReflectionClass($controller);
         $method = $params[1];
+        $methodParameters = $reflectionClass->getMethod($method)->getParameters();
+
+        foreach ($methodParameters as $parameter) {
+            if (preg_match('#AEcalle#', $parameter->getType()->getName())) {
+                $this->matches[] = $container->get($parameter->getType()->getName());
+            }
+        }
         return $controller->$method(...$this->matches)
             ->send();
     }

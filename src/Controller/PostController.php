@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace AEcalle\Oc\Php\Project5\Controller;
 
+use AEcalle\Oc\Php\Project5\Repository\PostRepository;
 use AEcalle\Oc\Php\Project5\Service\TokenCSRFManager;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 final class PostController extends AbstractController
 {
-    public function createPost(): Response
+    public function createPost(PostRepository $postRepository): Response
     {
         $this->checkAuth();
 
@@ -22,7 +23,7 @@ final class PostController extends AbstractController
                 'updatedAt' => new \DateTime(),
                 'userId' => $this->session->get('userId'),
             ],
-            [$this->postRepository,'add'],
+            [$postRepository,'add'],
             'Post ajouté !'
         );
         if ($isFormHandled) {
@@ -32,11 +33,11 @@ final class PostController extends AbstractController
         return $this->render('back/createPost.html.twig');
     }
 
-    public function posts(): Response
+    public function posts(PostRepository $postRepository): Response
     {
         $this->checkAuth();
 
-        $posts = $this->postRepository
+        $posts = $postRepository
             ->findBy(['user_id' => $this->user->getId()], [], 0, 50);
 
         return $this->render(
@@ -47,17 +48,17 @@ final class PostController extends AbstractController
         );
     }
 
-    public function updatePost(string $id): Response
+    public function updatePost(string $id, PostRepository $postRepository): Response
     {
         $this->checkAuth();
 
-        $post = $this->postRepository->find((int) $id);
+        $post = $postRepository->find((int) $id);
 
         $isFormHandled = $this->handleform(
             'Post',
             $post,
             ['updatedAt' => new \DateTime()],
-            [$this->postRepository, 'update'],
+            [$postRepository, 'update'],
             'Post modifié !'
         );
         if ($isFormHandled) {

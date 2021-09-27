@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AEcalle\Oc\Php\Project5\Router;
 
+use AEcalle\Oc\Php\Project5\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 
 final class Router
@@ -20,9 +21,9 @@ final class Router
      */
     private array $namedRoutes = [];
 
-    public function __construct(Request $request)
+    public function __construct()
     {
-        $this->request = $request;
+        $this->request = Request::createFromGlobals();
     }
 
     /**
@@ -41,7 +42,7 @@ final class Router
         return $this->add($path, $callable, $name, 'POST');
     }
 
-    public function run(): ?object
+    public function run(Container $container): ?object
     {
         if (! isset($this->routes[$this->request->getMethod()])) {
             throw new RouterException('REQUEST_METHOD doesn\'t exist');
@@ -50,10 +51,10 @@ final class Router
         foreach ($this->routes[$this->request->getMethod()] as $route) {
             if ($route->match($this->request->getPathInfo())) {
                 try {
-                    return $route->call($this);
+                    return $route->call($container);
                 } catch (\Exception $e) {
                     $route = new Route('/', 'BlogController#home');
-                    return $route->call($this);
+                    return $route->call($container);
                 }
             }
         }

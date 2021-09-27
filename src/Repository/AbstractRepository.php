@@ -13,9 +13,9 @@ abstract class AbstractRepository
     protected string $table;
     private string $class;
 
-    public function __construct(Request $request)
+    public function __construct()
     {
-        $pdoProvider = new PdoProvider($request);
+        $pdoProvider = new PdoProvider(Request::createFromGlobals());
         self::$db = $pdoProvider->connect();
 
         $classNameExploded = explode('_', $this->table);

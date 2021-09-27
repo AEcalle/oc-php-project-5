@@ -17,18 +17,18 @@ final class Container implements ContainerInterface
     /**
      * @return array<object> $instances
      */
-    public function get(string $id): array
+    public function get(string $id): object
     {
         if (! $this->has($id)) {
             $reflectionClass = new \ReflectionClass($id);
             $constructor = $reflectionClass->getConstructor();
 
             if (null === $constructor) {
-                $this->instances[] = $reflectionClass->newInstance();
+                $this->instances[$id] = $reflectionClass->newInstance();
             } else {
                 $parameters = $constructor->getParameters();
 
-                $this->instances[] = $reflectionClass->newInstanceArgs(
+                $this->instances[$id] = $reflectionClass->newInstanceArgs(
                     array_map(fn (ReflectionParameter $parameter) => $this->get($parameter->getType()->getName()), $parameters)
                 );
             }
