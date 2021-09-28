@@ -37,10 +37,10 @@
                                 <li class="nav-item"><a class="dropdown-item" href="/posts">Liste des posts</a></li>
                             </ul>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/comments">Commentaires</a>
-                        </li>
                         {% if userConnected.role == 'admin' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="/comments">Commentaires</a>
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="/users">Utilisateurs</a>
                             </li>

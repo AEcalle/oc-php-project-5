@@ -12,7 +12,7 @@ final class CommentController extends AbstractController
 {
     public function comments(CommentRepository $commentRepository): Response
     {
-        $this->checkAuth();
+        $this->checkAuth('admin');
 
         $comments = $commentRepository->findAll();
 
@@ -26,7 +26,7 @@ final class CommentController extends AbstractController
 
     public function publishComment(string $id, string $publish, CommentRepository $commentRepository): RedirectResponse
     {
-        $this->checkAuth();
+        $this->checkAuth('admin');
 
         $comment = $commentRepository->find((int) $id);
         $comment->setPublished((bool) $publish);
