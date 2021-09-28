@@ -99,6 +99,12 @@ final class BlogController extends AbstractController
         return $this->render('front/login.html.twig');
     }
 
+    public function logout(): Response
+    {
+        $this->session->invalidate();
+        return $this->redirect('login');
+    }
+
     public function createUser(UserRepository $userRepository): Response
     {
         $isFormHandled = $this->handleform(

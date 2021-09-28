@@ -23,6 +23,7 @@ $router->post('/post/:id-:slug', 'BlogController#post', 'post')
     ->width('id', '[0-9]+')->width('slug', '[0-9a-z\-]+');
 $router->get('/login', 'BlogController#login', 'login');
 $router->post('/login', 'BlogController#login', 'login');
+$router->get('/logout', 'BlogController#logout', 'logout');
 $router->get('/createUser', 'BlogController#createUser', 'createUser');
 $router->post('/createUser', 'BlogController#createUser', 'createUser');
 
