@@ -42,7 +42,7 @@ final class PostController extends AbstractController
                 'back/posts.html.twig',
                 [
                     'posts' => $postRepository
-                    ->findBy(['user_id' => $this->user->getId()], [], 0, 50),
+                        ->findBy(['user_id' => $this->user->getId()], [], 0, 50),
                 ]
             );
         }
@@ -51,7 +51,7 @@ final class PostController extends AbstractController
             'back/posts.html.twig',
             [
                 'posts' => $postRepository
-                ->findAll(),
+                    ->findAll(),
             ]
         );
     }
