@@ -37,13 +37,21 @@ final class PostController extends AbstractController
     {
         $this->checkAuth();
 
-        $posts = $postRepository
-            ->findBy(['user_id' => $this->user->getId()], [], 0, 50);
+        if ($this->user->getRole() !== 'admin') {
+            return $this->render(
+                'back/posts.html.twig',
+                [
+                    'posts' => $postRepository
+                        ->findBy(['user_id' => $this->user->getId()], [], 0, 50),
+                ]
+            );
+        }
 
         return $this->render(
             'back/posts.html.twig',
             [
-                'posts' => $posts,
+                'posts' => $postRepository
+                    ->findAll(),
             ]
         );
     }

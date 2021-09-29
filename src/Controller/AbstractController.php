@@ -31,6 +31,7 @@ abstract class AbstractController
         $this->session = new Session();
         $this->authorization = $authentication;
         $this->user = $this->getUser($userRepository);
+        $this->session->migrate();
     }
 
     /**

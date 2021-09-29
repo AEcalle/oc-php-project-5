@@ -53,13 +53,14 @@ final class Router
                 try {
                     return $route->call($container);
                 } catch (\Exception $e) {
-                    $route = new Route('/', 'BlogController#home');
+                    $route = new Route('/403', 'BlogController#page403');
                     return $route->call($container);
                 }
             }
         }
 
-        throw new RouterException('No matching routes');
+        $route = new Route('/404', 'BlogController#page404');
+        return $route->call($container);
     }
 
     /**

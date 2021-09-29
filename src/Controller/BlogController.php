@@ -99,6 +99,12 @@ final class BlogController extends AbstractController
         return $this->render('front/login.html.twig');
     }
 
+    public function logout(): Response
+    {
+        $this->session->invalidate();
+        return $this->redirect('login');
+    }
+
     public function createUser(UserRepository $userRepository): Response
     {
         $isFormHandled = $this->handleform(
@@ -113,5 +119,15 @@ final class BlogController extends AbstractController
         }
 
         return $this->render('front/createUser.html.twig');
+    }
+
+    public function page404(): Response
+    {
+        return $this->render('front/404.html.twig');
+    }
+
+    public function page403(): Response
+    {
+        return $this->render('front/403.html.twig');
     }
 }
