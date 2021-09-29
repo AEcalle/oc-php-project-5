@@ -25,13 +25,13 @@ final class Container implements ContainerInterface
 
             if (null === $constructor) {
                 $this->instances[$id] = $reflectionClass->newInstance();
-            } else {
-                $parameters = $constructor->getParameters();
-
-                $this->instances[$id] = $reflectionClass->newInstanceArgs(
-                    array_map(fn (ReflectionParameter $parameter) => $this->get($parameter->getType()->getName()), $parameters)
-                );
+                return $this->instances[$id];
             }
+            $parameters = $constructor->getParameters();
+
+            $this->instances[$id] = $reflectionClass->newInstanceArgs(
+                array_map(fn (ReflectionParameter $parameter) => $this->get($parameter->getType()->getName()), $parameters)
+            );
         }
         return $this->instances[$id];
     }
