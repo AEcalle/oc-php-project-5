@@ -3,5 +3,5 @@ PHP blog project as part of training course "Application Developer - PHP / Symfo
 # Installation
 
 ```bash
-git clone
+git clone https://github.com/AEcalle/oc-php-project-5.git blog
 ````
