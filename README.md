@@ -15,3 +15,5 @@ Install dependencies
 composer install
 ````
 Create MYSQL database and import blog.sql file.
+
+Replace the values in .env with your own values
