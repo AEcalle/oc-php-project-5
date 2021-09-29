@@ -14,3 +14,4 @@ Install dependencies
 ```bash
 composer install
 ````
+Create MYSQL database and import blog.sql file.
