@@ -5,7 +5,7 @@ Copy project on your system
 ```bash
 git clone https://github.com/AEcalle/oc-php-project-5.git blog
 ````
-Install dependecies
+Install dependencies
 ```bash
 composer update
 ````
