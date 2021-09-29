@@ -7,5 +7,5 @@ git clone https://github.com/AEcalle/oc-php-project-5.git blog
 ````
 Install dependencies
 ```bash
-composer update
+composer install
 ````
