@@ -16,15 +16,23 @@ composer install
 ```
 Create MYSQL database and import blog.sql file.
 
-Replace the values in .env with your own values to configure database and SMTP connection
+Replace the values in .env with your own values to configure database connection
 ```
 DB_HOST=host_name
 DB_NAME=db_name
 DB_USERNAME=username
 DB_PASSWORD=password
+```
+
+Replace the values in .env with your own values to configure SMTP connection
+```
 SMTP_HOST=host
 SMTP_USERNAME=username
 SMTP_PASSWORD=password
+```
+
+Replace the URL_SITE value in .env with your domain
+```
 URL_SITE=http://blog/
 ```
 
