@@ -161,10 +161,6 @@ CREATE TABLE IF NOT EXISTS `user` (
 -- Déchargement des données de la table `user`
 --
 
-INSERT INTO `user` (`id`, `email`, `password`, `created_at`, `role`) VALUES
-(6, 'contact@aurelienecalle.fr', '$2y$10$HDtX9HpQplH3GY2.seaJBeLLoikgc/KSAaeGNZJKoJ1xGuPtK4I4C', '2021-09-23 15:12:47', 'admin'),
-(8, 'blutch70@hotmail.com', '$2y$10$a3sUJJZAF6bU.SRSnfzoEe6E/go7lAICf6iMn31cV90sIK6gHR8By', '2021-09-24 10:42:31', 'author');
-
 --
 -- Contraintes pour les tables déchargées
 --
