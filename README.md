@@ -14,7 +14,12 @@ Install dependencies
 ```bash
 composer install
 ```
-Create MYSQL database and import blog.sql file.
+
+### Create Database
+*   Create MYSQL database
+*   Import blog.sql file
+
+### Configure environment variables
 
 Replace the values in .env with your own values to configure database connection
 ```
@@ -35,5 +40,10 @@ Replace the URL_SITE value in .env with your domain
 ```
 URL_SITE=http://blog/
 ```
-
+### Configure Server
 Point your domain to public/ directory
+
+### Create your admin profile
+*   Register here : your-domain/createUser
+*   Update your user role in database with "admin" value
+
