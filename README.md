@@ -46,4 +46,3 @@ Point your domain to public/ directory
 ### Create your admin profile
 *   Register here : your-domain/createUser
 *   Update your user role in database with "admin" value
-
