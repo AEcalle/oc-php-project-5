@@ -41,7 +41,26 @@ Replace the URL_SITE value in .env with your domain
 URL_SITE=http://blog/
 ```
 ### Configure Server
-Point your domain to public/ directory
+#### With PHP server
+Run this command
+```
+php -S localhost:8000 -t public
+```
+#### With Apache
+Create a virtual host in apache2.4.46\conf\extra\httpd-vhosts.conf
+```
+#
+<VirtualHost *:80>
+	ServerName blog
+	DocumentRoot "path-to-your-project/public"
+	<Directory  "path-to-your-project/public/">
+		Options +Indexes +Includes +FollowSymLinks +MultiViews
+		AllowOverride All
+		Require local
+	</Directory>
+</VirtualHost>
+#
+```
 
 ### Create your admin profile
 *   Register here : your-domain/createUser
