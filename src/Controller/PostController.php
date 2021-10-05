@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AEcalle\Oc\Php\Project5\Controller;
 
+use AEcalle\Oc\Php\Project5\Repository\CommentRepository;
 use AEcalle\Oc\Php\Project5\Repository\PostRepository;
 use AEcalle\Oc\Php\Project5\Service\TokenCSRFManager;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -86,7 +87,7 @@ final class PostController extends AbstractController
         );
     }
 
-    public function deletePost(string $id, string $token): RedirectResponse
+    public function deletePost(string $id, string $token, PostRepository $postRepository, CommentRepository $commentRepository): RedirectResponse
     {
         $this->checkAuth();
 
@@ -94,16 +95,16 @@ final class PostController extends AbstractController
         $this->request->request->set('Post_token', $token);
 
         if ($tokenCSRFManager->verifToken('Post', $this->request)) {
-            $comments = $this->commentRepository->findBy(
+            $comments = $commentRepository->findBy(
                 ['post_id' => (int) $id],
                 [],
                 0,
                 1000
             );
             foreach ($comments as $comment) {
-                $this->commentRepository->delete($comment->getId());
+                $commentRepository->delete($comment->getId());
             }
-            $this->postRepository->delete((int) $id);
+            $postRepository->delete((int) $id);
             $this->session->getFlashBag()->add('success', 'Post supprimé !');
         }
 
